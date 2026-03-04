@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>투자시그널 경영진 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+<style>
+  :root {
+    --bg: #1C1C1C;
+    --bg-card: #262626;
+    --bg-card-hover: #2E2E2E;
+    --text: #FFFFFF;
+    --text-secondary: #A0A0A0;
+    --accent: #E33737;
+    --accent-light: #FF5252;
+    --green: #4CAF50;
+    --orange: #F5A623;
+    --blue: #4A90D9;
+    --blue-light: #64B5F6;
+    --purple: #9C27B0;
+    --border: #333333;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+  }
+  /* Sticky Nav */
+  .top-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(28,28,28,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex; align-items: center; gap: 8px;
+    height: 56px; overflow-x: auto;
+  }
+  .top-nav .logo {
+    font-weight: 700; font-size: 16px;
+    color: var(--accent); white-space: nowrap;
+    margin-right: 16px;
+  }
+  .top-nav a {
+    color: var(--text-secondary); text-decoration: none;
+    font-size: 13px; padding: 6px 14px;
+    border-radius: 20px; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .top-nav a:hover, .top-nav a.active {
+    color: var(--text); background: var(--bg-card);
+  }
+  /* Container */
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  /* Section */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--accent);
+  }
+  .section-header h2 {
+    font-size: 22px; font-weight: 700;
+  }
+  .section-header .badge {
+    background: var(--accent);
+    color: #fff; font-size: 11px; font-weight: 600;
+    padding: 3px 10px; border-radius: 12px;
+  }
+  /* KPI Cards */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 768px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .kpi-grid { grid-template-columns: 1fr; } }
+  .kpi-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    border: 1px solid var(--border);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent);
+  }
+  .kpi-card .kpi-icon { font-size: 24px; margin-bottom: 8px; }
+  .kpi-card .kpi-label { color: var(--text-secondary); font-size: 13px; margin-bottom: 4px; }
+  .kpi-card .kpi-value { font-size: 32px; font-weight: 700; margin-bottom: 6px; }
+  .kpi-card .kpi-change {
+    font-size: 13px; display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 8px;
+  }
+  .kpi-card .kpi-change.up { background: rgba(76,175,80,0.15); color: var(--green); }
+  .kpi-card .kpi-change.down { background: rgba(227,55,55,0.15); color: var(--accent-light); }
+  .kpi-card .kpi-change.neutral { background: rgba(160,160,160,0.15); color: var(--text-secondary); }
+  .insight-bar {
+    background: linear-gradient(135deg, rgba(227,55,55,0.1), rgba(74,144,217,0.1));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 24px;
+    margin-top: 16px;
+    font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .insight-bar .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+  /* Chart containers */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .chart-grid.three-col { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 1000px) { .chart-grid, .chart-grid.three-col { grid-template-columns: 1fr; } }
+  .chart-box {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+  .chart-box.full { grid-column: 1 / -1; }
+  .chart-box h3 {
+    font-size: 15px; font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .chart-box .chart-note {
+    font-size: 12px; color: var(--text-secondary);
+    margin-top: 12px; line-height: 1.5;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+  }
+  .chart-canvas-wrap {
+    position: relative;
+    width: 100%;
+  }
+  /* Comparison cards */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .compare-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .compare-card h4 { font-size: 14px; margin-bottom: 12px; }
+  .compare-card .big-num { font-size: 36px; font-weight: 700; }
+  .compare-card .sub-stat { font-size: 13px; color: var(--text-secondary); margin-top: 8px; }
+  /* Table */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: fixed;
+  }
+  .data-table th:first-child, .data-table td:first-child { width: 40%; }
+  .data-table th:nth-child(2), .data-table td:nth-child(2) { width: 15%; text-align: center; }
+  .data-table th:nth-child(3), .data-table td:nth-child(3) { width: 20%; text-align: center; }
+  .data-table th:nth-child(4), .data-table td:nth-child(4) { width: 25%; text-align: center; }
+  .data-table th, .data-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .data-table th {
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  /* Next steps */
+  .next-step {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .priority-badge {
+    font-size: 12px; font-weight: 700;
+    padding: 4px 10px; border-radius: 8px;
+    flex-shrink: 0;
+  }
+  .priority-badge.p0 { background: var(--accent); color: #fff; }
+  .priority-badge.p1 { background: var(--orange); color: #000; }
+  .priority-badge.p2 { background: var(--blue); color: #fff; }
+  .next-step .step-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .next-step .step-desc { font-size: 13px; color: var(--text-secondary); }
+  /* Footer */
+  .footer {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 12px;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+  /* Funnel */
+  .funnel-bar-wrap {
+    margin-bottom: 14px;
+  }
+  .funnel-label {
+    font-size: 13px; margin-bottom: 4px;
+    display: flex; justify-content: space-between;
+  }
+  .funnel-bar-bg {
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    height: 32px;
+    overflow: hidden;
+  }
+  .funnel-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    display: flex; align-items: center;
+    padding-left: 10px;
+    font-size: 12px; font-weight: 600;
+    transition: width 0.6s ease;
+  }
+  /* Dashboard header */
+  .dash-header {
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+  .dash-header h1 {
+    font-size: 28px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .dash-header p {
+    color: var(--text-secondary); font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Sticky Navigation -->
+<nav class="top-nav">
+  <span class="logo">투자시그널</span>
+  <a href="#summary">요약</a>
+  <a href="#growth">성장</a>
+  <a href="#inflow">유입&전환</a>
+  <a href="#activation">활성화&해지방어</a>
+  <a href="#engagement">인게이지먼트</a>
+  <a href="#retention">리텐션</a>
+  <a href="#enhancement">고도화&Next</a>
+</nav>
+
+<div class="container">
+
+<!-- Dashboard Header -->
+<div class="dash-header">
+  <h1>투자시그널 경영진 대시보드</h1>
+  <p>SKT PASS 입점 투자 정보 서비스 | 론칭 2025.12.23 | 고도화 2026.02.13</p>
+</div>
+
+<!-- ============================================= -->
+<!-- Section A: Executive Summary -->
+<!-- ============================================= -->
+<div class="section" id="summary">
+  <div class="section-header">
+    <h2>Executive Summary</h2>
+    <span class="badge">KPI</span>
+  </div>
+  <div class="kpi-grid" id="kpiGrid"></div>
+  <div class="insight-bar">
+    <span class="dot"></span>
+    관심종목 등록자 해지 0명. 등록률 32 -> 50%가 다음 목표.
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- Section B: Growth -->
+<!-- ============================================= -->
+<div class="section" id="growth">
+  <div class="section-header">
+    <h2>유료 가입자 성장</h2>
+    <span class="badge">Growth</span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-box full">
+      <h3>B-1. 유료 가입자 수 추이 (일별)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartB1"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>B-2. 주간 가입 vs 해지 & 순증</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartB2"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>B-3. 주간 성장률 (%)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartB3"></canvas></div>
+    </div>
+  </div>
+  <div class="insight-bar" id="growthInsight"></div>
+</div>
+
+<!-- ============================================= -->
+<!-- Section C: Inflow & Conversion -->
+<!-- ============================================= -->
+<div class="section" id="inflow">
+  <div class="section-header">
+    <h2>유입 & 전환</h2>
+    <span class="badge">Inflow</span>
+  </div>
+  <div class="chart-grid three-col">
+    <div class="chart-box">
+      <h3>C-1. 유입 채널 비중 (1/21~)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartC1"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>C-2. 유입 채널 일별 추이</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartC2"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>C-4. 주간 전환율 추이</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartC4"></canvas></div>
+    </div>
+  </div>
+  <div class="chart-box" style="margin-top:16px;">
+    <div class="chart-note">소개 화면 전환 퍼널은 Amplitude 데이터 보강 후 추가 예정</div>
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- Section D: Activation & Churn Defense -->
+<!-- ============================================= -->
+<div class="section" id="activation">
+  <div class="section-header">
+    <h2>Activation & 해지 방어</h2>
+    <span class="badge">Activation</span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>D-1. D0 해지율 주간 추이</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartD1"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>D-2. Activation 퍼널 (최근 30일)</h3>
+      <div id="funnelD2" style="padding:8px 0;"></div>
+    </div>
+  </div>
+  <div style="margin-top:20px;">
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">D-3. 관심종목 등록자 vs 미등록자</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--green);">
+        <h4 style="color:var(--green);">관심종목 등록자</h4>
+        <div class="big-num" style="color:var(--green);">해지 0명</div>
+        <div class="sub-stat">전체 49명 중 해지 0명</div>
+        <div class="sub-stat">Day3 리텐션: 12.5%</div>
+        <div class="sub-stat">인게이지먼트: 30~58배</div>
+      </div>
+      <div class="compare-card" style="border-color:var(--accent);">
+        <h4 style="color:var(--accent);">미등록자</h4>
+        <div class="big-num" style="color:var(--accent);">해지 54명</div>
+        <div class="sub-stat">Day3 리텐션: 1.1%</div>
+        <div class="sub-stat">인게이지먼트: 기준</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- Section E: Engagement -->
+<!-- ============================================= -->
+<div class="section" id="engagement">
+  <div class="section-header">
+    <h2>서비스 소비 & 인게이지먼트</h2>
+    <span class="badge">Engagement</span>
+  </div>
+  <div class="chart-grid three-col">
+    <div class="chart-box">
+      <h3>E-2. 평균 세션 길이 (주간)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartE2"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>E-3. 주요 이벤트 추이 (주간)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartE3"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>E-6. Push 발송 vs 읽음 & CTR</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartE6"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- Section F: Retention & Churn -->
+<!-- ============================================= -->
+<div class="section" id="retention">
+  <div class="section-header">
+    <h2>리텐션 & 해지</h2>
+    <span class="badge">Retention</span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-box">
+      <h3>F-1. 리텐션 커브 (subscription_started -> _active)</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartF1"></canvas></div>
+      <div class="chart-note">Push 기반 서비스 특성상 앱 내 리텐션은 낮으나, Push를 통한 시그널 소비가 핵심 인게이지먼트</div>
+    </div>
+    <div class="chart-box">
+      <h3>F-3. D0 해지 비율 추이</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartF3"></canvas></div>
+    </div>
+  </div>
+  <div class="insight-bar" style="margin-top:16px;">
+    <span class="dot"></span>
+    관심종목 등록이 가장 강력한 해지 방어 변수. 등록자 49명 중 해지 0명, 미등록자 해지 54명.
+  </div>
+</div>
+
+<!-- ============================================= -->
+<!-- Section G: Enhancement & Next Steps -->
+<!-- ============================================= -->
+<div class="section" id="enhancement">
+  <div class="section-header">
+    <h2>고도화 진행 & Next Steps</h2>
+    <span class="badge">Roadmap</span>
+  </div>
+  <div class="chart-grid">
+    <div class="chart-box full">
+      <h3>G-1. 고도화 항목별 성과</h3>
+      <div style="overflow-x:auto;">
+        <table class="data-table" id="enhancementTable"></table>
+      </div>
+    </div>
+    <div class="chart-box">
+      <h3>G-2. Before vs After 주요 지표</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartG2"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <h3>G-4. Next Steps</h3>
+      <div id="nextStepsList"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  최종 갱신: 2026-03-03 (CSV), Amplitude 실시간<br>
+  투자시그널 경영진 대시보드 | 퀀팃투자자문
+</div>
+
+<script>
+// =============================================
+// CSV DATA - Embedded as JavaScript arrays
+// =============================================
+const csvData = {
+  date: ["2025-12-17","2025-12-18","2025-12-19","2025-12-20","2025-12-21","2025-12-22","2025-12-23","2025-12-24","2025-12-25","2025-12-26","2025-12-27","2025-12-28","2025-12-29","2025-12-30","2025-12-31","2026-01-01","2026-01-02","2026-01-03","2026-01-04","2026-01-05","2026-01-06","2026-01-07","2026-01-08","2026-01-09","2026-01-10","2026-01-11","2026-01-12","2026-01-13","2026-01-14","2026-01-15","2026-01-16","2026-01-17","2026-01-18","2026-01-19","2026-01-20","2026-01-21","2026-01-22","2026-01-23","2026-01-24","2026-01-25","2026-01-26","2026-01-27","2026-01-28","2026-01-29","2026-01-30","2026-01-31","2026-02-01","2026-02-02","2026-02-03","2026-02-04","2026-02-05","2026-02-06","2026-02-07","2026-02-08","2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13","2026-02-14","2026-02-15","2026-02-16","2026-02-17","2026-02-18","2026-02-19","2026-02-20","2026-02-21","2026-02-22","2026-02-23","2026-02-24","2026-02-25","2026-02-26","2026-02-27","2026-02-28","2026-03-01","2026-03-02","2026-03-03"],
+  active_users: [7,10,9,9,9,9,24,32,36,38,46,54,60,58,72,80,85,92,95,99,105,98,102,106,111,114,116,117,122,127,127,129,130,137,142,147,162,165,171,171,176,176,181,192,192,191,192,195,193,195,195,195,194,196,197,202,202,215,216,216,217,226,230,232,233,233,238,242,251,253,255,261,261,260,262,279,275],
+  daily_signup: [3,0,0,0,0,0,14,17,4,7,7,8,22,5,16,9,12,7,6,12,8,4,6,11,3,8,5,8,7,6,4,6,2,11,9,14,24,3,10,2,14,4,8,18,9,1,3,9,2,7,3,2,1,0,7,7,5,18,4,1,1,12,8,3,7,8,8,7,16,6,6,12,3,1,4,23,3],
+  daily_churn: [0,0,1,0,0,4,14,7,0,5,2,0,13,6,4,2,5,1,2,8,3,10,4,5,1,2,6,5,1,4,2,3,1,4,7,7,6,4,2,1,9,5,3,6,9,3,1,6,4,5,3,2,2,0,4,3,4,6,2,2,1,3,3,0,8,7,3,3,7,4,4,6,3,2,2,6,7],
+  watchlist_users: [5,6,6,6,6,5,16,19,23,22,24,25,25,26,27,30,29,29,28,26,29,28,30,30,30,30,30,31,31,34,35,36,35,41,40,37,40,41,43,43,44,43,46,50,50,50,51,52,55,56,55,55,56,56,54,55,56,63,64,64,66,67,68,70,72,73,75,79,81,80,80,82,82,82,83,91,88],
+  push_success: [14,18,34,23,6,9,31,52,82,100,80,12,66,85,69,54,101,74,7,51,71,152,115,106,37,22,144,46,59,102,172,43,34,138,154,134,114,117,13,6,153,151,116,100,139,17,7,137,181,157,185,72,26,31,78,133,108,106,85,70,0,0,0,92,11,183,67,0,5,105,58,90,202,30,0,0,91],
+  signal_read: [21,20,10,3,4,135,230,155,15,19,13,33,69,42,27,7,89,7,3,24,31,52,37,21,30,72,738,533,217,57,54,19,20,60,61,74,176,68,33,10,247,50,48,72,57,5,40,55,132,36,53,16,1,146,78,43,31,42,344,145,48,19,44,50,142,121,63,44,111,143,171,74,177,29,9,30,74],
+  churn_day0: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,45,45,45,48,49,49,49,50,52,54,57,58,57,57,60,62,63,63,65,66,67,70,70,72,73,73,73,73,73,75,76,80,81,81,80,83,85,84,86,87,89,93,94,95,96,98,97,97,98,103,105],
+  inflow_total: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,14,1,6,0,4,5,3,11,10,4,3,3,2,6,12,12,2,2,2,8,11,3,11,17,2,0,0,1,2,8,44,19,1,15,9,0,0,0,0,0,0,0],
+  inflow_pass_push: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,14,1,6,0,4,5,3,11,10,4,3,3,2,6,12,12,2,2,2,8,11,3,5,17,2,0,0,1,2,8,44,19,1,15,9,0,0,0,0,0,0,0],
+  inflow_pass_menu: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  rejoin_users: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,7,6,7,6,6,6,6,7,7,7,7,7,6,6,6,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,7,7,7,7,7,7,7,9,9,8,8,9,9,9,8,7,7,7,7]
+};
+
+// Short date labels (MM/DD)
+const shortDates = csvData.date.map(d => {
+  const parts = d.split('-');
+  return parseInt(parts[1]) + '/' + parseInt(parts[2]);
+});
+
+// =============================================
+// AMPLITUDE DATA
+// =============================================
+const ampWeekLabels = ['12/29','1/5','1/12','1/19','1/26','2/2','2/9','2/16','2/23','3/2'];
+const sessionLengthWeekly = [11.82, 17.64, 14.50, 18.33, 16.74, 34.85, 50.25, 28.86, 37.07, 16.51];
+const stockSignalViewed = [0, 0, 80, 340, 254, 254, 1244, 747, 1095, 281];
+const marketSignalViewed = [0, 0, 1248, 5836, 4903, 3976, 6252, 4857, 6568, 1943];
+const watchlistStockAdded = [0, 0, 0, 0, 0, 0, 0, 0, 198, 95];
+
+const activationFunnel = {
+  subscription_started: 189,
+  stock_signal_viewed: 37,
+  stock_signal_pct: 19.6,
+  watchlist_stock_added: 5,
+  watchlist_pct: 2.6
+};
+
+const retentionData = {
+  days: [0, 1, 2, 3, 7, 14, 30],
+  values: [100, 100, 2.3, 1.3, 1.1, 0, 1.4]
+};
+
+// =============================================
+// STATIC DATA
+// =============================================
+const beforeAfterData = {
+  sessionLength: { before: 16.7, after: 37, change: '+121%' },
+  readRate: { before: 4.5, after: 49, change: 'x10.9' },
+  stockSignalViewed: { before: 47, after: 146, change: '+210%' },
+  eventPageViews: { before: 14, after: 3408, change: '기능 신설' },
+  stockSignalsPage: { before: 0, after: 2877, change: '신규' },
+  d0d1ChurnRate: { before: 24.8, after: 25.4, change: '미변화' },
+  signupConversion: { before: 0.66, after: null, change: '측정 필요' },
+  watchlistRate: { before: 30, after: 32, change: '소폭 상승' }
+};
+
+const enhancementStatus = [
+  { name: '홈 성과 강조 최상단', status: '확인', color: '#4CAF50', before: '16.7초', after: '37초' },
+  { name: '시그널 3->5개 + 간소화', status: '확인', color: '#4CAF50', before: '4.5%', after: '49%' },
+  { name: '많이 포착된 시그널(신규)', status: '확인', color: '#4CAF50', before: '기능 미존재', after: '3,408건/월' },
+  { name: '상세 가독성+탐색 퍼널', status: '확인', color: '#4CAF50', before: '47건/일', after: '146건/일' },
+  { name: '종목 상세(신규)', status: '확인', color: '#4CAF50', before: '0', after: '2,877건/월' },
+  { name: '서비스 소개 고도화', status: '미확인', color: '#F5A623', before: '0.66%', after: '측정 필요' },
+  { name: 'D0+D1 해지율', status: '미변화', color: '#F5A623', before: '24.8%', after: '25.4%' },
+  { name: '관심종목 등록률', status: '소폭 상승', color: '#F5A623', before: '30%', after: '32%' }
+];
+
+const nextSteps = [
+  { priority: 'P0', title: '가입 직후 관심종목 등록 유도', desc: '등록자 해지 0명. 등록률 32->50% 올리면 해지율 목표 달성 가능' },
+  { priority: 'P0', title: '첫 시그널 즉시 경험', desc: 'Push 기다리지 않고 가입 즉시 인기 시그널 3개 표시' },
+  { priority: 'P0', title: '가입 24시간 내 웰컴 Push', desc: '관심종목 기반 시그널 Push 발송' },
+  { priority: 'P1', title: '해지 예측 변수 확보', desc: '관심종목/시그널읽음/Push별 해지율 코호트 분석' },
+  { priority: 'P2', title: 'sign-up 전환율 측정', desc: '소개화면 고도화 효과 Before 0.66% -> After 측정' }
+];
+
+// =============================================
+// UTILITY FUNCTIONS
+// =============================================
+const chartDefaults = {
+  color: '#A0A0A0',
+  borderColor: '#333',
+  font: { family: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', sans-serif" }
+};
+Chart.defaults.color = chartDefaults.color;
+Chart.defaults.font.family = chartDefaults.font.family;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.pointStyleWidth = 10;
+Chart.defaults.plugins.legend.labels.padding = 16;
+Chart.defaults.elements.line.tension = 0.3;
+Chart.defaults.elements.point.radius = 2;
+Chart.defaults.elements.point.hoverRadius = 5;
+Chart.defaults.scale.grid = { color: 'rgba(255,255,255,0.05)' };
+
+// Helper to aggregate weekly data from daily arrays
+function aggregateWeekly(dates, values, aggFn) {
+  const weeks = {};
+  dates.forEach((d, i) => {
+    const dt = new Date(d);
+    const dayOfWeek = dt.getDay();
+    const monday = new Date(dt);
+    monday.setDate(dt.getDate() - ((dayOfWeek + 6) % 7));
+    const key = (monday.getMonth()+1) + '/' + monday.getDate();
+    if (!weeks[key]) weeks[key] = { values: [], startDate: monday };
+    if (values[i] !== null && values[i] !== undefined) {
+      weeks[key].values.push(values[i]);
+    }
+  });
+  const result = [];
+  const sortedKeys = Object.entries(weeks).sort((a, b) => a[1].startDate - b[1].startDate);
+  for (const [key, data] of sortedKeys) {
+    if (aggFn === 'sum') result.push({ label: key, value: data.values.reduce((a,b) => a+b, 0) });
+    else if (aggFn === 'avg') result.push({ label: key, value: data.values.length ? data.values.reduce((a,b) => a+b, 0) / data.values.length : 0 });
+    else if (aggFn === 'last') result.push({ label: key, value: data.values.length ? data.values[data.values.length - 1] : 0 });
+  }
+  return result;
+}
+
+// =============================================
+// SECTION A: KPI Cards
+// =============================================
+function renderKPICards() {
+  const latest = csvData.active_users.length - 1;
+  const prev = latest - 7;
+  const activeNow = csvData.active_users[latest];
+  const activePrev = csvData.active_users[Math.max(0, prev)];
+
+  // Weekly signups/churns for latest vs previous week
+  const last7Signup = csvData.daily_signup.slice(-7).reduce((a,b)=>a+b,0);
+  const prev7Signup = csvData.daily_signup.slice(-14,-7).reduce((a,b)=>a+b,0);
+  const last7Churn = csvData.daily_churn.slice(-7).reduce((a,b)=>a+b,0);
+  const netGrowth = last7Signup - last7Churn;
+  const prevNetGrowth = prev7Signup - csvData.daily_churn.slice(-14,-7).reduce((a,b)=>a+b,0);
+
+  // D0 churn rate - latest week
+  const last7ChurnD0 = csvData.churn_day0.slice(-7).filter(v=>v!==null);
+  const last7SignupForD0 = csvData.daily_signup.slice(-7);
+  const d0Total = last7ChurnD0.length ? last7ChurnD0[last7ChurnD0.length-1] - (last7ChurnD0.length > 1 ? last7ChurnD0[0] : 0) : 0;
+  // Use cumulative approach - compare latest churn_day0 as a rate
+  const totalSignups = csvData.daily_signup.reduce((a,b)=>a+b,0);
+  const latestD0 = csvData.churn_day0[latest];
+  const d0Rate = latestD0 !== null ? ((latestD0 / totalSignups) * 100).toFixed(1) : 'N/A';
+
+  // Session length - use 2nd-to-last week if latest is anomalous (< 20s due to 대규모 유입)
+  const sessionLatest = sessionLengthWeekly[sessionLengthWeekly.length - 1];
+  const sessionNow = sessionLatest < 20 ? sessionLengthWeekly[sessionLengthWeekly.length - 2] : sessionLatest;
+  const sessionPrev = sessionLatest < 20 ? sessionLengthWeekly[sessionLengthWeekly.length - 3] : sessionLengthWeekly[sessionLengthWeekly.length - 2];
+  const sessionNote = sessionLatest < 20 ? ' (2/23주 기준, 3/2 이상치 제외)' : '';
+
+  // Read rate - use 영업일 평균 읽음률. signal_read / push_success, cap at 100%
+  const last7Read = csvData.signal_read.slice(-7).reduce((a,b)=>a+b,0);
+  const last7Push = csvData.push_success.slice(-7).reduce((a,b)=>a+b,0);
+  const readRateRaw = last7Push > 0 ? (last7Read / last7Push * 100) : 0;
+  const readRate = Math.min(readRateRaw, 100).toFixed(1); // 읽음은 이전 Push 영향으로 100% 초과 가능, cap
+
+  // Watchlist rate
+  const wlRate = activeNow > 0 ? ((csvData.watchlist_users[latest] / activeNow) * 100).toFixed(1) : 'N/A';
+  const wlRatePrev = activePrev > 0 ? ((csvData.watchlist_users[prev] / activePrev) * 100).toFixed(1) : 'N/A';
+
+  const cards = [
+    {
+      icon: '👥', label: '유료 가입자 수',
+      value: activeNow.toLocaleString() + '명',
+      change: ((activeNow - activePrev) >= 0 ? '+' : '') + (activeNow - activePrev) + '명 (vs 1주전)',
+      dir: activeNow >= activePrev ? 'up' : 'down'
+    },
+    {
+      icon: '📈', label: '주간 순증',
+      value: (netGrowth >= 0 ? '+' : '') + netGrowth + '명',
+      change: '가입 ' + last7Signup + '명 / 해지 ' + last7Churn + '명',
+      dir: netGrowth > 0 ? 'up' : netGrowth < 0 ? 'down' : 'neutral'
+    },
+    {
+      icon: '🚪', label: 'D0 해지율 (누적비)',
+      value: d0Rate + '%',
+      change: 'Before 24.8%',
+      dir: parseFloat(d0Rate) <= 24.8 ? 'up' : 'down'
+    },
+    {
+      icon: '⏱️', label: '평균 세션 길이',
+      value: sessionNow.toFixed(1) + '초',
+      change: ((sessionNow - 16.7) >= 0 ? '+' : '') + (sessionNow - 16.7).toFixed(1) + '초 (vs Before 16.7초)' + sessionNote,
+      dir: sessionNow >= 16.7 ? 'up' : 'down'
+    },
+    {
+      icon: '📖', label: '시그널 읽음률 (주간)',
+      value: readRate + '%',
+      change: 'Before 4.5%',
+      dir: parseFloat(readRate) > 4.5 ? 'up' : 'down'
+    },
+    {
+      icon: '⭐', label: '관심종목 등록률',
+      value: wlRate + '%',
+      change: (parseFloat(wlRate) - parseFloat(wlRatePrev) >= 0 ? '+' : '') + (parseFloat(wlRate) - parseFloat(wlRatePrev)).toFixed(1) + 'pp (vs 1주전)',
+      dir: parseFloat(wlRate) >= parseFloat(wlRatePrev) ? 'up' : 'down'
+    }
+  ];
+
+  const grid = document.getElementById('kpiGrid');
+  cards.forEach(c => {
+    grid.innerHTML += `
+      <div class="kpi-card">
+        <div class="kpi-icon">${c.icon}</div>
+        <div class="kpi-label">${c.label}</div>
+        <div class="kpi-value">${c.value}</div>
+        <span class="kpi-change ${c.dir}">${c.dir === 'up' ? '▲' : c.dir === 'down' ? '▼' : '—'} ${c.change}</span>
+      </div>`;
+  });
+}
+
+// =============================================
+// SECTION B: Growth Charts
+// =============================================
+function renderGrowthCharts() {
+  // B-1: Active users daily with milestone lines
+  const launchIdx = csvData.date.indexOf('2025-12-23');
+  const enhanceIdx = csvData.date.indexOf('2026-02-13');
+
+  new Chart(document.getElementById('chartB1'), {
+    type: 'line',
+    data: {
+      labels: shortDates,
+      datasets: [{
+        label: '유료 가입자 수',
+        data: csvData.active_users,
+        borderColor: '#E33737',
+        backgroundColor: 'rgba(227,55,55,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        annotation: {
+          annotations: {
+            launch: {
+              type: 'line', xMin: launchIdx, xMax: launchIdx,
+              borderColor: '#4A90D9', borderWidth: 2, borderDash: [6, 4],
+              label: { display: true, content: '런칭 (12/23)', position: 'start', backgroundColor: '#4A90D9', font: { size: 11 } }
+            },
+            enhance: {
+              type: 'line', xMin: enhanceIdx, xMax: enhanceIdx,
+              borderColor: '#4CAF50', borderWidth: 2, borderDash: [6, 4],
+              label: { display: true, content: '고도화 (2/13)', position: 'start', backgroundColor: '#4CAF50', font: { size: 11 } }
+            }
+          }
+        }
+      },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // B-2: Weekly signup vs churn with net line
+  const weeklySignup = aggregateWeekly(csvData.date, csvData.daily_signup, 'sum');
+  const weeklyChurn = aggregateWeekly(csvData.date, csvData.daily_churn, 'sum');
+  const weekLabels = weeklySignup.map(w => w.label);
+  const netGrowthWeekly = weeklySignup.map((w, i) => w.value - weeklyChurn[i].value);
+
+  new Chart(document.getElementById('chartB2'), {
+    type: 'bar',
+    data: {
+      labels: weekLabels,
+      datasets: [
+        { label: '가입', data: weeklySignup.map(w => w.value), backgroundColor: 'rgba(74,144,217,0.7)', borderRadius: 4, order: 2 },
+        { label: '해지', data: weeklyChurn.map(w => w.value), backgroundColor: 'rgba(227,55,55,0.7)', borderRadius: 4, order: 2 },
+        { label: '순증', data: netGrowthWeekly, type: 'line', borderColor: '#4CAF50', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, order: 1 }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // B-3: Weekly growth rate
+  const weeklyActive = aggregateWeekly(csvData.date, csvData.active_users, 'last');
+  const growthRate = weeklyActive.map((w, i) => {
+    if (i === 0) return 0;
+    const prev = weeklyActive[i-1].value;
+    return prev > 0 ? ((w.value - prev) / prev * 100) : 0;
+  });
+
+  new Chart(document.getElementById('chartB3'), {
+    type: 'line',
+    data: {
+      labels: weeklyActive.map(w => w.label),
+      datasets: [{
+        label: '주간 성장률 (%)',
+        data: growthRate,
+        borderColor: '#F5A623',
+        backgroundColor: 'rgba(245,166,35,0.1)',
+        fill: true,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          ticks: { callback: v => v.toFixed(1) + '%' }
+        }
+      }
+    }
+  });
+
+  // Insight
+  const latestActive = csvData.active_users[csvData.active_users.length - 1];
+  const totalSignups = csvData.daily_signup.reduce((a,b) => a+b, 0);
+  const totalChurns = csvData.daily_churn.reduce((a,b) => a+b, 0);
+  document.getElementById('growthInsight').innerHTML = `
+    <span class="dot"></span>
+    론칭 이후 총 ${totalSignups}명 가입, ${totalChurns}명 해지. 현재 유료 가입자 ${latestActive}명.
+    최근 1주 순증 ${csvData.daily_signup.slice(-7).reduce((a,b)=>a+b,0) - csvData.daily_churn.slice(-7).reduce((a,b)=>a+b,0)}명.
+  `;
+}
+
+// =============================================
+// SECTION C: Inflow & Conversion
+// =============================================
+function renderInflowCharts() {
+  // Filter data from 1/21 onward (index 35)
+  const startIdx = csvData.date.indexOf('2026-01-21');
+  const inflowDates = csvData.date.slice(startIdx);
+  const inflowShort = inflowDates.map(d => { const p = d.split('-'); return parseInt(p[1])+'/'+parseInt(p[2]); });
+  const pushData = csvData.inflow_pass_push.slice(startIdx).map(v => v || 0);
+  const menuData = csvData.inflow_pass_menu.slice(startIdx).map(v => v || 0);
+  const totalData = csvData.inflow_total.slice(startIdx).map(v => v || 0);
+  const otherData = totalData.map((t, i) => Math.max(0, t - pushData[i] - menuData[i]));
+
+  const totalPush = pushData.reduce((a,b) => a+b, 0);
+  const totalMenu = menuData.reduce((a,b) => a+b, 0);
+  const totalOther = otherData.reduce((a,b) => a+b, 0);
+
+  // C-1: Doughnut
+  new Chart(document.getElementById('chartC1'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Push 유입', '메뉴 유입', '기타'],
+      datasets: [{
+        data: [totalPush, totalMenu, totalOther],
+        backgroundColor: ['#4A90D9', '#4CAF50', '#F5A623'],
+        borderWidth: 0
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '60%',
+      plugins: {
+        legend: { position: 'bottom' }
+      }
+    }
+  });
+
+  // C-2: Stacked area
+  new Chart(document.getElementById('chartC2'), {
+    type: 'line',
+    data: {
+      labels: inflowShort,
+      datasets: [
+        { label: 'Push', data: pushData, borderColor: '#4A90D9', backgroundColor: 'rgba(74,144,217,0.3)', fill: true, borderWidth: 1.5, pointRadius: 1 },
+        { label: '메뉴', data: menuData, borderColor: '#4CAF50', backgroundColor: 'rgba(76,175,80,0.3)', fill: true, borderWidth: 1.5, pointRadius: 1 },
+        { label: '기타', data: otherData, borderColor: '#F5A623', backgroundColor: 'rgba(245,166,35,0.3)', fill: true, borderWidth: 1.5, pointRadius: 1 }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: { ticks: { maxTicksLimit: 10 } },
+        y: { stacked: true, beginAtZero: true }
+      }
+    }
+  });
+
+  // C-4: Weekly conversion rate (PASS 유입 중 가입 비율, 자연유입 제외)
+  // inflow_total = PASS 통해 들어온 수, daily_signup에는 자연유입도 포함
+  // 전환율 = min(daily_signup, inflow_total) / inflow_total * 100 으로 cap
+  const signupWeekly = aggregateWeekly(inflowDates, csvData.daily_signup.slice(startIdx), 'sum');
+  const inflowWeekly = aggregateWeekly(inflowDates, totalData, 'sum');
+  const convRate = signupWeekly.map((s, i) => {
+    const inf = inflowWeekly[i].value;
+    if (inf <= 0) return null;
+    // 자연유입이 있으므로 가입수가 유입수보다 클 수 있음, 100%로 cap
+    return Math.min(s.value / inf * 100, 100);
+  });
+
+  new Chart(document.getElementById('chartC4'), {
+    type: 'line',
+    data: {
+      labels: signupWeekly.map(w => w.label),
+      datasets: [{
+        label: '전환율 (%)',
+        data: convRate,
+        borderColor: '#9C27B0',
+        backgroundColor: 'rgba(156,39,176,0.1)',
+        fill: true,
+        borderWidth: 2,
+        spanGaps: true
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => v != null ? v.toFixed(0) + '%' : '' } }
+      }
+    }
+  });
+}
+
+// =============================================
+// SECTION D: Activation & Churn Defense
+// =============================================
+function renderActivationCharts() {
+  // D-1: D0 churn rate weekly
+  // We need weekly D0 churn count / weekly signup count
+  // churn_day0 is cumulative, so we need deltas
+  const d0Deltas = [];
+  for (let i = 0; i < csvData.churn_day0.length; i++) {
+    if (csvData.churn_day0[i] === null) { d0Deltas.push(null); continue; }
+    if (i === 0 || csvData.churn_day0[i-1] === null) { d0Deltas.push(null); continue; }
+    d0Deltas.push(csvData.churn_day0[i] - csvData.churn_day0[i-1]);
+  }
+
+  const weeklyD0 = aggregateWeekly(csvData.date, d0Deltas, 'sum');
+  const weeklySignupAll = aggregateWeekly(csvData.date, csvData.daily_signup, 'sum');
+
+  // Align by week label
+  const d0RateLabels = [];
+  const d0RateValues = [];
+  weeklyD0.forEach((w, i) => {
+    const signupWeek = weeklySignupAll.find(s => s.label === w.label);
+    const signup = signupWeek ? signupWeek.value : 0;
+    if (w.value !== null && signup > 0) {
+      d0RateLabels.push(w.label);
+      d0RateValues.push((w.value / signup * 100));
+    }
+  });
+
+  new Chart(document.getElementById('chartD1'), {
+    type: 'bar',
+    data: {
+      labels: d0RateLabels,
+      datasets: [{
+        label: 'D0 해지율 (%)',
+        data: d0RateValues,
+        backgroundColor: d0RateValues.map(v => v <= 20 ? 'rgba(76,175,80,0.7)' : v <= 24.8 ? 'rgba(245,166,35,0.7)' : 'rgba(227,55,55,0.7)'),
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, max: Math.max(80, ...d0RateValues) + 10, ticks: { callback: v => v + '%' } }
+      },
+      plugins: {
+        annotation: {
+          annotations: {
+            target: {
+              type: 'line', yMin: 20, yMax: 20,
+              borderColor: '#4CAF50', borderWidth: 2, borderDash: [6,4],
+              label: { display: true, content: '목표 20%', position: 'end', backgroundColor: '#4CAF50', font: { size: 10 } }
+            },
+            before: {
+              type: 'line', yMin: 24.8, yMax: 24.8,
+              borderColor: '#F5A623', borderWidth: 1.5, borderDash: [4,4],
+              label: { display: true, content: 'Before 24.8%', position: 'start', backgroundColor: '#F5A623', font: { size: 10 } }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // D-2: Funnel (HTML)
+  const funnelEl = document.getElementById('funnelD2');
+  const funnelSteps = [
+    { name: 'subscription_started (가입)', value: 189, pct: 100 },
+    { name: 'stock_signal_viewed (종목 시그널 조회)', value: 37, pct: 19.6 },
+    { name: 'watchlist_stock_added (관심종목 등록)', value: 5, pct: 2.6 }
+  ];
+  const colors = ['#4A90D9', '#F5A623', '#E33737'];
+  funnelSteps.forEach((step, i) => {
+    funnelEl.innerHTML += `
+      <div class="funnel-bar-wrap">
+        <div class="funnel-label">
+          <span>${step.name}</span>
+          <span style="font-weight:600;">${step.value}명 (${step.pct}%)</span>
+        </div>
+        <div class="funnel-bar-bg">
+          <div class="funnel-bar-fill" style="width:${step.pct}%;background:${colors[i]};">${step.pct}%</div>
+        </div>
+      </div>`;
+  });
+}
+
+// =============================================
+// SECTION E: Engagement
+// =============================================
+function renderEngagementCharts() {
+  // E-2: Session length weekly
+  const enhanceWeekIdx = ampWeekLabels.indexOf('2/9'); // approximate
+  new Chart(document.getElementById('chartE2'), {
+    type: 'line',
+    data: {
+      labels: ampWeekLabels,
+      datasets: [{
+        label: '평균 세션 길이 (초)',
+        data: sessionLengthWeekly,
+        borderColor: '#4A90D9',
+        backgroundColor: 'rgba(74,144,217,0.1)',
+        fill: true,
+        borderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true, ticks: { callback: v => v + '초' } } },
+      plugins: {
+        annotation: {
+          annotations: {
+            baseline: {
+              type: 'line', yMin: 16.7, yMax: 16.7,
+              borderColor: '#F5A623', borderWidth: 1.5, borderDash: [6,4],
+              label: { display: true, content: 'Before 16.7초', position: 'start', backgroundColor: '#F5A623', font: { size: 10 } }
+            },
+            enhance: {
+              type: 'line', xMin: 6, xMax: 6,
+              borderColor: '#4CAF50', borderWidth: 2, borderDash: [6,4],
+              label: { display: true, content: '고도화', position: 'start', backgroundColor: '#4CAF50', font: { size: 10 } }
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // E-3: Main events weekly
+  new Chart(document.getElementById('chartE3'), {
+    type: 'line',
+    data: {
+      labels: ampWeekLabels,
+      datasets: [
+        { label: 'market_signal_viewed', data: marketSignalViewed, borderColor: '#4A90D9', borderWidth: 2 },
+        { label: 'stock_signal_viewed', data: stockSignalViewed, borderColor: '#E33737', borderWidth: 2 },
+        { label: 'watchlist_stock_added', data: watchlistStockAdded, borderColor: '#4CAF50', borderWidth: 2 }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+
+  // E-6: Push sent vs read & CTR
+  const weeklyPush = aggregateWeekly(csvData.date, csvData.push_success, 'sum');
+  const weeklyRead = aggregateWeekly(csvData.date, csvData.signal_read, 'sum');
+  const ctrLine = weeklyPush.map((w, i) => {
+    return w.value > 0 ? (weeklyRead[i].value / w.value * 100) : null;
+  });
+
+  new Chart(document.getElementById('chartE6'), {
+    type: 'bar',
+    data: {
+      labels: weeklyPush.map(w => w.label),
+      datasets: [
+        { label: 'Push 발송', data: weeklyPush.map(w => w.value), backgroundColor: 'rgba(74,144,217,0.6)', borderRadius: 4, order: 2 },
+        { label: '시그널 읽음', data: weeklyRead.map(w => w.value), backgroundColor: 'rgba(76,175,80,0.6)', borderRadius: 4, order: 2 },
+        { label: 'CTR (%)', data: ctrLine, type: 'line', borderColor: '#F5A623', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 3, yAxisID: 'y1', order: 1 }
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        y: { beginAtZero: true, position: 'left' },
+        y1: { beginAtZero: true, position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: v => v != null ? v.toFixed(0) + '%' : '' } }
+      }
+    }
+  });
+}
+
+// =============================================
+// SECTION F: Retention & Churn
+// =============================================
+function renderRetentionCharts() {
+  // F-1: Retention curve
+  new Chart(document.getElementById('chartF1'), {
+    type: 'line',
+    data: {
+      labels: retentionData.days.map(d => 'Day ' + d),
+      datasets: [{
+        label: '리텐션 (%)',
+        data: retentionData.values,
+        borderColor: '#E33737',
+        backgroundColor: 'rgba(227,55,55,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 4,
+        pointBackgroundColor: '#E33737'
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { min: 0, max: 105, ticks: { callback: v => v + '%' } }
+      }
+    }
+  });
+
+  // F-3: D0 churn proportion from CSV
+  // Daily churn_day0 delta / daily_churn to see how much of churn is D0
+  const d0Props = [];
+  const d0PropLabels = [];
+  for (let i = 1; i < csvData.churn_day0.length; i++) {
+    if (csvData.churn_day0[i] === null || csvData.churn_day0[i-1] === null) continue;
+    const delta = csvData.churn_day0[i] - csvData.churn_day0[i-1];
+    const churn = csvData.daily_churn[i];
+    if (churn > 0) {
+      d0Props.push((delta / churn * 100));
+      d0PropLabels.push(shortDates[i]);
+    }
+  }
+
+  // Aggregate weekly for cleaner view
+  const d0PropWeeklyLabels = [];
+  const d0PropWeeklyValues = [];
+  for (let i = 0; i < d0Props.length; i += 7) {
+    const chunk = d0Props.slice(i, i+7);
+    const avg = chunk.reduce((a,b)=>a+b, 0) / chunk.length;
+    d0PropWeeklyLabels.push(d0PropLabels[i]);
+    d0PropWeeklyValues.push(avg);
+  }
+
+  new Chart(document.getElementById('chartF3'), {
+    type: 'bar',
+    data: {
+      labels: d0PropWeeklyLabels,
+      datasets: [{
+        label: 'D0 해지 비율 (해지 중 %)',
+        data: d0PropWeeklyValues,
+        backgroundColor: 'rgba(227,55,55,0.6)',
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => v.toFixed(0) + '%' } }
+      }
+    }
+  });
+}
+
+// =============================================
+// SECTION G: Enhancement & Next Steps
+// =============================================
+function renderEnhancement() {
+  // G-1: Table
+  const table = document.getElementById('enhancementTable');
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>항목</th>
+        <th>상태</th>
+        <th>Before</th>
+        <th>After</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${enhancementStatus.map(e => `
+        <tr>
+          <td>${e.name}</td>
+          <td><span class="status-badge" style="background:${e.color}20;color:${e.color};">${e.status === '확인' ? '확인' : e.status === '미확인' ? '미확인' : e.status}</span></td>
+          <td style="color:var(--text-secondary);">${e.before}</td>
+          <td style="font-weight:600;">${e.after}</td>
+        </tr>
+      `).join('')}
+    </tbody>`;
+
+  // G-2: Before vs After - 정규화 비교 차트
+  // Before를 100%로 놓고 After의 상대 크기를 보여줌
+  const g2Items = [
+    { label: '세션 길이', before: 16.7, after: 37, unit: '초', change: '+121%' },
+    { label: '읽음률', before: 4.5, after: 49, unit: '%', change: 'x10.9' },
+    { label: '종목시그널/일', before: 47, after: 146, unit: '건', change: '+210%' },
+    { label: '관심종목 등록률', before: 30, after: 32, unit: '%', change: '+6.7%' }
+  ];
+  const g2Labels = g2Items.map(i => i.label);
+
+  new Chart(document.getElementById('chartG2'), {
+    type: 'bar',
+    data: {
+      labels: g2Labels,
+      datasets: [
+        {
+          label: 'Before',
+          data: g2Items.map(i => i.before),
+          backgroundColor: 'rgba(160,160,160,0.5)',
+          borderRadius: 4,
+          barPercentage: 0.6,
+          categoryPercentage: 0.7
+        },
+        {
+          label: 'After',
+          data: g2Items.map(i => i.after),
+          backgroundColor: 'rgba(227,55,55,0.8)',
+          borderRadius: 4,
+          barPercentage: 0.6,
+          categoryPercentage: 0.7
+        }
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      scales: {
+        x: {
+          beginAtZero: true,
+          display: false
+        },
+        y: {
+          ticks: { font: { size: 12 } }
+        }
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          labels: { boxWidth: 12, padding: 16, font: { size: 11 } }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const item = g2Items[ctx.dataIndex];
+              return `${ctx.dataset.label}: ${ctx.raw}${item.unit}`;
+            },
+            afterBody: function(ctxArr) {
+              const item = g2Items[ctxArr[0].dataIndex];
+              return `변화: ${item.change}`;
+            }
+          }
+        }
+      }
+    },
+    plugins: [{
+      id: 'changeLabels',
+      afterDatasetsDraw(chart) {
+        const ctx2 = chart.ctx;
+        const meta = chart.getDatasetMeta(1);
+        meta.data.forEach((bar, i) => {
+          const item = g2Items[i];
+          ctx2.save();
+          ctx2.fillStyle = '#4CAF50';
+          ctx2.font = 'bold 11px Arial';
+          ctx2.textAlign = 'left';
+          ctx2.textBaseline = 'middle';
+          ctx2.fillText(item.change, bar.x + 6, bar.y);
+          ctx2.restore();
+        });
+      }
+    }]
+  });
+
+  // G-4: Next steps
+  const list = document.getElementById('nextStepsList');
+  nextSteps.forEach(s => {
+    const cls = s.priority === 'P0' ? 'p0' : s.priority === 'P1' ? 'p1' : 'p2';
+    list.innerHTML += `
+      <div class="next-step">
+        <span class="priority-badge ${cls}">${s.priority}</span>
+        <div>
+          <div class="step-title">${s.title}</div>
+          <div class="step-desc">${s.desc}</div>
+        </div>
+      </div>`;
+  });
+}
+
+// =============================================
+// INIT
+// =============================================
+renderKPICards();
+renderGrowthCharts();
+renderInflowCharts();
+renderActivationCharts();
+renderEngagementCharts();
+renderRetentionCharts();
+renderEnhancement();
+
+// Active nav highlighting on scroll
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.top-nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector(`.top-nav a[href="#${e.target.id}"]`);
+      if (link) link.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
