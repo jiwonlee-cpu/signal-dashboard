@@ -260,6 +260,165 @@
   .dash-header p {
     color: var(--text-secondary); font-size: 14px;
   }
+  /* [NEW] Service description under header */
+  .dash-header .service-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+    line-height: 1.7;
+  }
+  /* [NEW] North Star Metric & Full Funnel Flow */
+  .nsm-box {
+    background: linear-gradient(135deg, rgba(227,55,55,0.12), rgba(74,144,217,0.08));
+    border: 2px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 20px 28px;
+    margin-bottom: 24px;
+  }
+  .nsm-declaration {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent-light);
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .full-funnel-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    padding: 8px 0;
+  }
+  .funnel-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    min-width: 110px;
+    text-align: center;
+  }
+  .funnel-step .step-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .funnel-step .step-metric {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-light);
+  }
+  .funnel-step .step-sub {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .funnel-arrow {
+    font-size: 22px;
+    color: var(--text-secondary);
+    margin: 0 6px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 768px) {
+    .full-funnel-flow { flex-direction: column; gap: 8px; }
+    .funnel-arrow { transform: rotate(90deg); margin: 4px 0; }
+  }
+  /* [NEW] Warning alert box for retention */
+  .alert-box {
+    margin-top: 14px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .alert-box.warning {
+    background: rgba(227,55,55,0.08);
+    border: 2px solid var(--accent);
+  }
+  .alert-box .alert-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent-light);
+    margin-bottom: 6px;
+  }
+  .alert-box .real-metric {
+    display: inline-block;
+    background: rgba(76,175,80,0.15);
+    color: var(--green);
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-weight: 600;
+    margin: 2px 4px;
+  }
+  /* [NEW] Enhancement summary box */
+  .enhancement-summary {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--blue);
+    border-radius: var(--radius);
+    padding: 16px 24px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+  .enhancement-summary .summary-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  /* [NEW] Cohort heatmap table */
+  .cohort-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    table-layout: auto;
+  }
+  .cohort-table th, .cohort-table td {
+    padding: 8px 10px;
+    text-align: center;
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  .cohort-table th {
+    background: rgba(255,255,255,0.05);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 11px;
+  }
+  .cohort-table td.cohort-label {
+    text-align: left;
+    font-weight: 600;
+    color: var(--text);
+    background: rgba(255,255,255,0.02);
+  }
+  /* [NEW] Accuracy KPI cards */
+  .accuracy-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .accuracy-card .acc-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .accuracy-card .acc-value {
+    font-size: 40px;
+    font-weight: 700;
+  }
+  .accuracy-card .acc-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 8px;
+  }
 </style>
 </head>
 <body>
@@ -282,6 +441,10 @@
 <div class="dash-header">
   <h1>투자시그널 경영진 대시보드</h1>
   <p>SKT PASS 입점 투자 정보 서비스 | 론칭 2025.12.23 | 고도화 2026.02.13</p>
+  <div class="service-desc">
+    AI가 주식 시장의 이상 신호를 탐지해 Push 알림으로 알려주는 유료 구독 서비스.<br>
+    SKT PASS 앱 내에서 월 8,800원에 제공. Push로 시그널을 받아보는 것이 핵심 사용 패턴.
+  </div>
 </div>
 
 <!-- ============================================= -->
@@ -292,10 +455,47 @@
     <h2>Executive Summary</h2>
     <span class="badge">KPI</span>
   </div>
+
+  <!-- [NEW] North Star Metric + Full Funnel Flow -->
+  <div class="nsm-box">
+    <div class="nsm-declaration">North Star: 관심종목 등록률 (등록자 해지 0명, 현재 32% &rarr; 목표 50%)</div>
+    <div class="full-funnel-flow">
+      <div class="funnel-step">
+        <div class="step-name">PASS 유입</div>
+        <div class="step-metric">Push</div>
+        <div class="step-sub">유입의 99%</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step">
+        <div class="step-name">가입</div>
+        <div class="step-metric">551명</div>
+        <div class="step-sub">누적 가입</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step" style="border-color:var(--accent);">
+        <div class="step-name">관심종목 등록</div>
+        <div class="step-metric" style="color:var(--green);">32%</div>
+        <div class="step-sub">목표 50%</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step">
+        <div class="step-name">시그널 소비</div>
+        <div class="step-metric">146건/일</div>
+        <div class="step-sub">종목 시그널</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step" style="border-color:var(--green);">
+        <div class="step-name">가입 유지</div>
+        <div class="step-metric" style="color:var(--green);">275명</div>
+        <div class="step-sub">활성 가입자</div>
+      </div>
+    </div>
+  </div>
+
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="insight-bar">
     <span class="dot"></span>
-    관심종목 등록자 해지 0명. 등록률 32 -> 50%가 다음 목표.
+    관심종목 등록자 해지 0명. 등록률 32 &rarr; 50%가 다음 목표.
   </div>
 </div>
 
@@ -349,6 +549,11 @@
   <div class="chart-box" style="margin-top:16px;">
     <div class="chart-note">소개 화면 전환 퍼널은 Amplitude 데이터 보강 후 추가 예정</div>
   </div>
+  <!-- [NEW] C 섹션 인사이트 바 -->
+  <div class="insight-bar">
+    <span class="dot"></span>
+    전체 유입의 99%가 PASS Push. 메뉴 유입 0건으로 PASS 내 자연 노출 채널 다각화 필요.
+  </div>
 </div>
 
 <!-- ============================================= -->
@@ -387,6 +592,18 @@
       </div>
     </div>
   </div>
+  <!-- [NEW] D-4. 관심종목 등록률 주간 추이 -->
+  <div style="margin-top:20px;">
+    <div class="chart-box">
+      <h3>D-4. 관심종목 등록률 주간 추이</h3>
+      <div class="chart-canvas-wrap"><canvas id="chartD4"></canvas></div>
+    </div>
+  </div>
+  <!-- [NEW] D 섹션 인사이트 바 -->
+  <div class="insight-bar">
+    <span class="dot"></span>
+    가입 189명 중 시그널 조회 19.6%, 관심종목 등록 2.6%. 온보딩에서 관심종목 등록으로 바로 유도해야.
+  </div>
 </div>
 
 <!-- ============================================= -->
@@ -411,6 +628,26 @@
       <div class="chart-canvas-wrap"><canvas id="chartE6"></canvas></div>
     </div>
   </div>
+  <!-- [NEW] 시그널 적중률 카드 -->
+  <div style="margin-top:20px;">
+    <div class="compare-grid">
+      <div class="accuracy-card" style="border-color:var(--blue);">
+        <div class="acc-label">전체 시그널 적중률</div>
+        <div class="acc-value" style="color:var(--blue);">48.3%</div>
+        <div class="acc-desc">전체 발생 시그널 중 방향 적중 비율</div>
+      </div>
+      <div class="accuracy-card" style="border-color:var(--green);">
+        <div class="acc-label">기회포착 시그널 적중률</div>
+        <div class="acc-value" style="color:var(--green);">57.8%</div>
+        <div class="acc-desc">기회포착 유형 시그널 방향 적중 비율</div>
+      </div>
+    </div>
+  </div>
+  <!-- [NEW] E 섹션 인사이트 바 -->
+  <div class="insight-bar">
+    <span class="dot"></span>
+    고도화 후 세션 길이 2배+, 시그널 조회 3배+. Push를 통한 시그널 소비가 핵심 인게이지먼트.
+  </div>
 </div>
 
 <!-- ============================================= -->
@@ -423,15 +660,52 @@
   </div>
   <div class="chart-grid">
     <div class="chart-box">
-      <h3>F-1. 리텐션 커브 (subscription_started -> _active)</h3>
+      <h3>F-1. 리텐션 커브 (가입 &rarr; 앱 재방문)</h3>
       <div class="chart-canvas-wrap"><canvas id="chartF1"></canvas></div>
-      <div class="chart-note">Push 기반 서비스 특성상 앱 내 리텐션은 낮으나, Push를 통한 시그널 소비가 핵심 인게이지먼트</div>
+      <!-- [UPDATED] 경고 강화된 alert box -->
+      <div class="alert-box warning">
+        <div class="alert-title">&#9888;&#65039; 참고 지표 &mdash; 앱 재방문 기반 리텐션</div>
+        이 서비스는 Push 알림으로 시그널을 소비하는 구조입니다. 앱 재방문 기반 리텐션(Day2 2.3%)은 참고 지표이며,
+        실제 서비스 소비는 아래 지표로 판단합니다.<br>
+        <span class="real-metric">Push 읽음률 49%</span>
+        <span class="real-metric">종목 시그널 조회 146건/일</span>
+      </div>
     </div>
     <div class="chart-box">
       <h3>F-3. D0 해지 비율 추이</h3>
       <div class="chart-canvas-wrap"><canvas id="chartF3"></canvas></div>
     </div>
   </div>
+
+  <!-- [NEW] F-2. 주간 코호트별 리텐션 히트맵 -->
+  <div style="margin-top:20px;">
+    <div class="chart-box full">
+      <h3>F-2. 주간 코호트별 리텐션 (가입주 &rarr; 앱 재방문)</h3>
+      <div style="overflow-x:auto;" id="cohortHeatmapWrap"></div>
+      <div class="chart-note">W0-W1 100%는 가입 이벤트 특성상 자연. W2 이후 급락은 Push 기반 서비스의 구조적 특성.</div>
+    </div>
+  </div>
+
+  <!-- [NEW] F-4. 해지 시점 분포 -->
+  <div style="margin-top:20px;">
+    <div class="chart-grid">
+      <div class="chart-box">
+        <h3>F-4. 해지 시점 분포 (After 기간: 2/13~)</h3>
+        <div class="chart-canvas-wrap"><canvas id="chartF4"></canvas></div>
+        <div class="chart-note">당일 해지가 80% &mdash; 온보딩 첫 경험이 해지 방어의 핵심</div>
+      </div>
+      <div class="chart-box" style="display:flex;flex-direction:column;justify-content:center;">
+        <div style="text-align:center;">
+          <div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">After 기간 해지 31명 중</div>
+          <div style="font-size:48px;font-weight:700;color:var(--accent);">80.6%</div>
+          <div style="font-size:16px;font-weight:600;color:var(--accent);margin-top:4px;">당일(D0) 해지</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:16px;">D0: 25명 | D1+: 6명</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">가입 첫날 경험이 유지를 결정합니다</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="insight-bar" style="margin-top:16px;">
     <span class="dot"></span>
     관심종목 등록이 가장 강력한 해지 방어 변수. 등록자 49명 중 해지 0명, 미등록자 해지 54명.
@@ -446,6 +720,18 @@
     <h2>고도화 진행 & Next Steps</h2>
     <span class="badge">Roadmap</span>
   </div>
+
+  <!-- [NEW] 고도화 변경 요약 -->
+  <div class="enhancement-summary">
+    <div class="summary-title">&#128295; 2/13 고도화에서 바꾼 것</div>
+    &#9312; 홈 최상단에 시그널 성과 강조 &nbsp;
+    &#9313; 시그널 3&rarr;5개 노출 + 텍스트 간소화 &nbsp;
+    &#9314; '많이 포착된 시그널' 신규 영역 &nbsp;
+    &#9315; 상세 페이지 가독성 개선 + 탐색 퍼널 추가 &nbsp;
+    &#9316; 종목 상세 화면 신설 &nbsp;
+    &#9317; 서비스 소개 화면 리뉴얼
+  </div>
+
   <div class="chart-grid">
     <div class="chart-box full">
       <h3>G-1. 고도화 항목별 성과</h3>
@@ -516,6 +802,21 @@ const activationFunnel = {
 const retentionData = {
   days: [0, 1, 2, 3, 7, 14, 30],
   values: [100, 100, 2.3, 1.3, 1.1, 0, 1.4]
+};
+
+// [NEW] Cohort retention data
+const cohortRetention = {
+  labels: ['1/12', '1/19', '1/26', '2/2', '2/9', '2/16', '2/23'],
+  cohortSize: [13, 69, 54, 25, 40, 50, 43],
+  data: [
+    [100, 100, 0, 0, 0, 0, 0],
+    [100, 100, 0, 0, 2.9, 1.4, 0],
+    [100, 100, 3.7, 0, 1.9, 0],
+    [100, 100, 0, 0],
+    [100, 100, 2.5, 0],
+    [100, 100, 0],
+    [100, 100]
+  ]
 };
 
 // =============================================
@@ -636,37 +937,37 @@ function renderKPICards() {
 
   const cards = [
     {
-      icon: '👥', label: '유료 가입자 수',
+      icon: '\u{1F465}', label: '유료 가입자 수',
       value: activeNow.toLocaleString() + '명',
       change: ((activeNow - activePrev) >= 0 ? '+' : '') + (activeNow - activePrev) + '명 (vs 1주전)',
       dir: activeNow >= activePrev ? 'up' : 'down'
     },
     {
-      icon: '📈', label: '주간 순증',
+      icon: '\u{1F4C8}', label: '주간 순증',
       value: (netGrowth >= 0 ? '+' : '') + netGrowth + '명',
       change: '가입 ' + last7Signup + '명 / 해지 ' + last7Churn + '명',
       dir: netGrowth > 0 ? 'up' : netGrowth < 0 ? 'down' : 'neutral'
     },
     {
-      icon: '🚪', label: 'D0 해지율 (누적비)',
+      icon: '\u{1F6AA}', label: 'D0 해지율 (누적비)',
       value: d0Rate + '%',
       change: 'Before 24.8%',
       dir: parseFloat(d0Rate) <= 24.8 ? 'up' : 'down'
     },
     {
-      icon: '⏱️', label: '평균 세션 길이',
+      icon: '\u{23F1}\u{FE0F}', label: '평균 세션 길이',
       value: sessionNow.toFixed(1) + '초',
       change: ((sessionNow - 16.7) >= 0 ? '+' : '') + (sessionNow - 16.7).toFixed(1) + '초 (vs Before 16.7초)' + sessionNote,
       dir: sessionNow >= 16.7 ? 'up' : 'down'
     },
     {
-      icon: '📖', label: '시그널 읽음률 (주간)',
+      icon: '\u{1F4D6}', label: '시그널 읽음률 (주간)',
       value: readRate + '%',
       change: 'Before 4.5%',
       dir: parseFloat(readRate) > 4.5 ? 'up' : 'down'
     },
     {
-      icon: '⭐', label: '관심종목 등록률',
+      icon: '\u{2B50}', label: '관심종목 등록률',
       value: wlRate + '%',
       change: (parseFloat(wlRate) - parseFloat(wlRatePrev) >= 0 ? '+' : '') + (parseFloat(wlRate) - parseFloat(wlRatePrev)).toFixed(1) + 'pp (vs 1주전)',
       dir: parseFloat(wlRate) >= parseFloat(wlRatePrev) ? 'up' : 'down'
@@ -680,7 +981,7 @@ function renderKPICards() {
         <div class="kpi-icon">${c.icon}</div>
         <div class="kpi-label">${c.label}</div>
         <div class="kpi-value">${c.value}</div>
-        <span class="kpi-change ${c.dir}">${c.dir === 'up' ? '▲' : c.dir === 'down' ? '▼' : '—'} ${c.change}</span>
+        <span class="kpi-change ${c.dir}">${c.dir === 'up' ? '\u25B2' : c.dir === 'down' ? '\u25BC' : '\u2014'} ${c.change}</span>
       </div>`;
   });
 }
@@ -854,14 +1155,11 @@ function renderInflowCharts() {
   });
 
   // C-4: Weekly conversion rate (PASS 유입 중 가입 비율, 자연유입 제외)
-  // inflow_total = PASS 통해 들어온 수, daily_signup에는 자연유입도 포함
-  // 전환율 = min(daily_signup, inflow_total) / inflow_total * 100 으로 cap
   const signupWeekly = aggregateWeekly(inflowDates, csvData.daily_signup.slice(startIdx), 'sum');
   const inflowWeekly = aggregateWeekly(inflowDates, totalData, 'sum');
   const convRate = signupWeekly.map((s, i) => {
     const inf = inflowWeekly[i].value;
     if (inf <= 0) return null;
-    // 자연유입이 있으므로 가입수가 유입수보다 클 수 있음, 100%로 cap
     return Math.min(s.value / inf * 100, 100);
   });
 
@@ -893,8 +1191,6 @@ function renderInflowCharts() {
 // =============================================
 function renderActivationCharts() {
   // D-1: D0 churn rate weekly
-  // We need weekly D0 churn count / weekly signup count
-  // churn_day0 is cumulative, so we need deltas
   const d0Deltas = [];
   for (let i = 0; i < csvData.churn_day0.length; i++) {
     if (csvData.churn_day0[i] === null) { d0Deltas.push(null); continue; }
@@ -905,7 +1201,6 @@ function renderActivationCharts() {
   const weeklyD0 = aggregateWeekly(csvData.date, d0Deltas, 'sum');
   const weeklySignupAll = aggregateWeekly(csvData.date, csvData.daily_signup, 'sum');
 
-  // Align by week label
   const d0RateLabels = [];
   const d0RateValues = [];
   weeklyD0.forEach((w, i) => {
@@ -952,25 +1247,76 @@ function renderActivationCharts() {
     }
   });
 
-  // D-2: Funnel (HTML)
+  // D-2: Funnel (HTML) - [UPDATED] 한글화 + 원본 이벤트명 소표시
   const funnelEl = document.getElementById('funnelD2');
   const funnelSteps = [
-    { name: 'subscription_started (가입)', value: 189, pct: 100 },
-    { name: 'stock_signal_viewed (종목 시그널 조회)', value: 37, pct: 19.6 },
-    { name: 'watchlist_stock_added (관심종목 등록)', value: 5, pct: 2.6 }
+    { name: '가입 완료', eventName: 'subscription_started', value: 189, pct: 100 },
+    { name: '종목 시그널 조회', eventName: 'stock_signal_viewed', value: 37, pct: 19.6 },
+    { name: '관심종목 등록', eventName: 'watchlist_stock_added', value: 5, pct: 2.6 }
   ];
   const colors = ['#4A90D9', '#F5A623', '#E33737'];
   funnelSteps.forEach((step, i) => {
     funnelEl.innerHTML += `
       <div class="funnel-bar-wrap">
         <div class="funnel-label">
-          <span>${step.name}</span>
+          <span>${step.name} <span style="font-size:11px;color:var(--text-secondary);opacity:0.7;">(${step.eventName})</span></span>
           <span style="font-weight:600;">${step.value}명 (${step.pct}%)</span>
         </div>
         <div class="funnel-bar-bg">
           <div class="funnel-bar-fill" style="width:${step.pct}%;background:${colors[i]};">${step.pct}%</div>
         </div>
       </div>`;
+  });
+
+  // [NEW] D-4: 관심종목 등록률 주간 추이
+  const weeklyWL = aggregateWeekly(csvData.date, csvData.watchlist_users, 'last');
+  const weeklyActiveForWL = aggregateWeekly(csvData.date, csvData.active_users, 'last');
+  const wlRateWeekly = weeklyWL.map((w, i) => {
+    const active = weeklyActiveForWL[i] ? weeklyActiveForWL[i].value : 0;
+    return active > 0 ? (w.value / active * 100) : 0;
+  });
+
+  new Chart(document.getElementById('chartD4'), {
+    type: 'line',
+    data: {
+      labels: weeklyWL.map(w => w.label),
+      datasets: [{
+        label: '관심종목 등록률 (%)',
+        data: wlRateWeekly,
+        borderColor: '#4CAF50',
+        backgroundColor: 'rgba(76,175,80,0.1)',
+        fill: true,
+        borderWidth: 2,
+        pointRadius: 3,
+        pointBackgroundColor: '#4CAF50'
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 60,
+          ticks: { callback: v => v + '%' }
+        }
+      },
+      plugins: {
+        annotation: {
+          annotations: {
+            target: {
+              type: 'line', yMin: 50, yMax: 50,
+              borderColor: '#4CAF50', borderWidth: 2, borderDash: [6,4],
+              label: { display: true, content: '목표 50%', position: 'end', backgroundColor: '#4CAF50', font: { size: 10 } }
+            },
+            before: {
+              type: 'line', yMin: 30, yMax: 30,
+              borderColor: '#F5A623', borderWidth: 1.5, borderDash: [4,4],
+              label: { display: true, content: 'Before 30%', position: 'start', backgroundColor: '#F5A623', font: { size: 10 } }
+            }
+          }
+        }
+      }
+    }
   });
 }
 
@@ -979,7 +1325,7 @@ function renderActivationCharts() {
 // =============================================
 function renderEngagementCharts() {
   // E-2: Session length weekly
-  const enhanceWeekIdx = ampWeekLabels.indexOf('2/9'); // approximate
+  const enhanceWeekIdx = ampWeekLabels.indexOf('2/9');
   new Chart(document.getElementById('chartE2'), {
     type: 'line',
     data: {
@@ -1015,21 +1361,26 @@ function renderEngagementCharts() {
     }
   });
 
-  // E-3: Main events weekly
+  // E-3: Main events weekly - [UPDATED] 한글화 라벨
   new Chart(document.getElementById('chartE3'), {
     type: 'line',
     data: {
       labels: ampWeekLabels,
       datasets: [
-        { label: 'market_signal_viewed', data: marketSignalViewed, borderColor: '#4A90D9', borderWidth: 2 },
-        { label: 'stock_signal_viewed', data: stockSignalViewed, borderColor: '#E33737', borderWidth: 2 },
-        { label: 'watchlist_stock_added', data: watchlistStockAdded, borderColor: '#4CAF50', borderWidth: 2 }
+        { label: '시장 시그널 조회 (market_signal_viewed)', data: marketSignalViewed, borderColor: '#4A90D9', borderWidth: 2 },
+        { label: '종목 시그널 조회 (stock_signal_viewed)', data: stockSignalViewed, borderColor: '#E33737', borderWidth: 2 },
+        { label: '관심종목 등록 (watchlist_stock_added)', data: watchlistStockAdded, borderColor: '#4CAF50', borderWidth: 2 }
       ]
     },
     options: {
       responsive: true,
       interaction: { mode: 'index', intersect: false },
-      scales: { y: { beginAtZero: true } }
+      scales: { y: { beginAtZero: true } },
+      plugins: {
+        legend: {
+          labels: { font: { size: 11 } }
+        }
+      }
     }
   });
 
@@ -1090,7 +1441,6 @@ function renderRetentionCharts() {
   });
 
   // F-3: D0 churn proportion from CSV
-  // Daily churn_day0 delta / daily_churn to see how much of churn is D0
   const d0Props = [];
   const d0PropLabels = [];
   for (let i = 1; i < csvData.churn_day0.length; i++) {
@@ -1131,6 +1481,87 @@ function renderRetentionCharts() {
       }
     }
   });
+
+  // [NEW] F-2: Cohort Retention Heatmap Table
+  renderCohortHeatmap();
+
+  // [NEW] F-4: Churn Timing Distribution (Donut)
+  new Chart(document.getElementById('chartF4'), {
+    type: 'doughnut',
+    data: {
+      labels: ['D0 당일 해지 (25명)', 'D1+ 이후 해지 (6명)'],
+      datasets: [{
+        data: [25, 6],
+        backgroundColor: ['#E33737', '#F5A623'],
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '55%',
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 12 }, padding: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              const total = 31;
+              const pct = (ctx.raw / total * 100).toFixed(1);
+              return ctx.label + ' (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+// [NEW] Cohort Heatmap Renderer
+function renderCohortHeatmap() {
+  const wrap = document.getElementById('cohortHeatmapWrap');
+  const maxWeeks = Math.max(...cohortRetention.data.map(d => d.length));
+
+  // Generate header
+  let html = '<table class="cohort-table"><thead><tr>';
+  html += '<th style="text-align:left;">가입 주차</th>';
+  html += '<th>인원</th>';
+  for (let w = 0; w < maxWeeks; w++) {
+    html += `<th>W${w}</th>`;
+  }
+  html += '</tr></thead><tbody>';
+
+  // Generate rows
+  cohortRetention.labels.forEach((label, i) => {
+    html += '<tr>';
+    html += `<td class="cohort-label">${label}주</td>`;
+    html += `<td style="color:var(--text-secondary);text-align:center;">${cohortRetention.cohortSize[i]}명</td>`;
+
+    for (let w = 0; w < maxWeeks; w++) {
+      if (w < cohortRetention.data[i].length) {
+        const val = cohortRetention.data[i][w];
+        const bg = getCohortColor(val);
+        const textColor = val >= 50 ? '#fff' : val > 0 ? '#fff' : 'var(--text-secondary)';
+        html += `<td style="background:${bg};color:${textColor};font-weight:${val > 0 ? '600' : '400'};">${val}%</td>`;
+      } else {
+        html += '<td style="background:rgba(255,255,255,0.02);color:var(--text-secondary);">-</td>';
+      }
+    }
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  wrap.innerHTML = html;
+}
+
+function getCohortColor(val) {
+  if (val >= 100) return 'rgba(76,175,80,0.7)';
+  if (val >= 50) return 'rgba(76,175,80,0.5)';
+  if (val > 5) return 'rgba(76,175,80,0.3)';
+  if (val > 0) return 'rgba(245,166,35,0.4)';
+  return 'rgba(227,55,55,0.25)';
 }
 
 // =============================================
@@ -1159,8 +1590,7 @@ function renderEnhancement() {
       `).join('')}
     </tbody>`;
 
-  // G-2: Before vs After - 정규화 비교 차트
-  // Before를 100%로 놓고 After의 상대 크기를 보여줌
+  // G-2: Before vs After
   const g2Items = [
     { label: '세션 길이', before: 16.7, after: 37, unit: '초', change: '+121%' },
     { label: '읽음률', before: 4.5, after: 49, unit: '%', change: 'x10.9' },
