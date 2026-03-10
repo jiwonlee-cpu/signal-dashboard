@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>투자시그널 경영진 대시보드</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
 <style>
   :root {
     --bg: #1C1C1C;
@@ -880,7 +880,7 @@ Chart.defaults.plugins.legend.labels.padding = 16;
 Chart.defaults.elements.line.tension = 0.3;
 Chart.defaults.elements.point.radius = 2;
 Chart.defaults.elements.point.hoverRadius = 5;
-Chart.defaults.scale.grid = { color: 'rgba(255,255,255,0.05)' };
+Chart.defaults.scale.grid.color = 'rgba(255,255,255,0.05)';
 
 // Helper to aggregate weekly data from daily arrays
 function aggregateWeekly(dates, values, aggFn) {
