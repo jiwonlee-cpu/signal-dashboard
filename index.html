@@ -428,7 +428,6 @@
   <span class="logo">투자시그널</span>
   <a href="#summary">요약</a>
   <a href="#growth">성장</a>
-  <a href="#inflow">유입&전환</a>
   <a href="#activation">활성화&해지방어</a>
   <a href="#engagement">인게이지먼트</a>
   <a href="#retention">리텐션</a>
@@ -445,6 +444,9 @@
     SKT PASS 앱 내에서 월 8,800원에 제공하는 주식 투자 정보 유료 구독 서비스.<br>
     주요 종목의 투자 시그널을 실시간으로 제공하며, 2025.12.23 론칭 후 서비스 고도화 진행 중.
   </div>
+  <div style="margin-top:16px;">
+    <button onclick="document.getElementById('updateModal').style.display='flex'" style="background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;">📊 데이터 업데이트</button>
+  </div>
 </div>
 
 <!-- ============================================= -->
@@ -458,8 +460,8 @@
 
   <!-- [NEW] North Star Metric + Full Funnel Flow -->
   <div class="nsm-box">
-    <div class="nsm-declaration" style="font-size:18px;">🎯 연말 목표: 유료 가입자 10,000명 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 275명 · 마케팅 병행 시 달성 가능, 현재 organic only)</span></div>
-    <div class="nsm-declaration" style="font-size:15px;color:var(--green);margin-top:4px;">✅ 달성: D0 해지율 20% 이하 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(누적 19.1% · Before 24.8%)</span></div>
+    <div class="nsm-declaration" style="font-size:18px;">🎯 연말 목표: 유료 가입자 10,000명 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 302명 · 마케팅 병행 시 달성 가능, 현재 organic only)</span></div>
+    <div class="nsm-declaration" style="font-size:15px;color:var(--green);margin-top:4px;">✅ 달성: D0 해지율 20% 이하 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(누적 19.7% · Before 24.8%)</span></div>
     <div class="nsm-declaration" style="font-size:15px;color:var(--orange);margin-top:4px;">🔥 다음 목표: D0+D1 해지율 20% 미만 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 25.4%)</span></div>
     <div class="full-funnel-flow">
       <div class="funnel-step">
@@ -476,7 +478,7 @@
       <div class="funnel-arrow">&rarr;</div>
       <div class="funnel-step">
         <div class="step-name">가입</div>
-        <div class="step-metric">551명</div>
+        <div class="step-metric">588명</div>
         <div class="step-sub">누적 (전환 1.0%)</div>
       </div>
       <div class="funnel-arrow">&rarr;</div>
@@ -488,7 +490,7 @@
       <div class="funnel-arrow">&rarr;</div>
       <div class="funnel-step" style="border-color:var(--green);">
         <div class="step-name">가입 유지</div>
-        <div class="step-metric" style="color:var(--green);">275명</div>
+        <div class="step-metric" style="color:var(--green);">302명</div>
         <div class="step-sub">활성 가입자</div>
       </div>
     </div>
@@ -497,7 +499,7 @@
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="insight-bar">
     <span class="dot"></span>
-    D0 해지율 20% 이하 달성(19.1%). 다음 목표: D0+D1 해지율 20% 미만(현재 25.4%). 관심종목 등록 유도가 핵심 레버. 연말 1만명은 마케팅 병행 필요.
+    D0 해지율 20% 이하 달성(19.7%). 다음 목표: D0+D1 해지율 20% 미만(현재 25.4%). 관심종목 등록 유도가 핵심 레버. 연말 1만명은 마케팅 병행 필요.
   </div>
 </div>
 
@@ -525,38 +527,6 @@
     </div>
   </div>
   <div class="insight-bar" id="growthInsight"></div>
-</div>
-
-<!-- ============================================= -->
-<!-- Section C: Inflow & Conversion -->
-<!-- ============================================= -->
-<div class="section" id="inflow">
-  <div class="section-header">
-    <h2>유입 & 전환</h2>
-    <span class="badge">Inflow</span>
-  </div>
-  <div class="chart-grid three-col">
-    <div class="chart-box">
-      <h3>C-1. 유입 채널 비중 (1/21~)</h3>
-      <div class="chart-canvas-wrap"><canvas id="chartC1"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <h3>C-2. 유입 채널 일별 추이</h3>
-      <div class="chart-canvas-wrap"><canvas id="chartC2"></canvas></div>
-    </div>
-    <div class="chart-box">
-      <h3>C-4. 주간 전환율 추이</h3>
-      <div class="chart-canvas-wrap"><canvas id="chartC4"></canvas></div>
-    </div>
-  </div>
-  <div class="chart-box" style="margin-top:16px;">
-    <div class="chart-note">⚠️ 현재 유입 채널 데이터는 Slack BE 리포트 기준(Push 유입만 추적). Amplitude 세션 분석 결과: /sign-up 93%, /sign-in 5%, /investment-signals 2%. 비Push 유입도 존재하나 별도 추적 필요.</div>
-  </div>
-  <!-- [NEW] C 섹션 인사이트 바 -->
-  <div class="insight-bar">
-    <span class="dot"></span>
-    Slack BE 유입 추적 기준 99%가 PASS Push. 단, Amplitude 세션 데이터에서 /sign-in 직접 접근(5%)도 확인됨. 유입 채널 다각화 및 자연 노출 확대 필요.
-  </div>
 </div>
 
 <!-- ============================================= -->
@@ -597,6 +567,7 @@
         <div class="sub-stat" style="margin-top:8px;font-size:12px;color:var(--accent);">→ 관심종목 미등록 시 해지 확률 24배 ↑<br>온보딩에서 등록 유도가 최우선</div>
       </div>
     </div>
+    <div class="chart-note" style="margin-top:12px;">⚠️ 이 데이터는 일회성 분석 결과입니다 (Amplitude 코호트 교차 분석). 일일 Slack 데이터에서는 해지자의 관심종목 등록 여부를 자동 추적하지 않습니다.</div>
   </div>
   <!-- [NEW] D-4. 관심종목 등록률 주간 추이 -->
   <div style="margin-top:20px;">
@@ -628,12 +599,12 @@
     <div class="chart-box">
       <h3>E-3. 주요 이벤트 추이 (주간)</h3>
       <div class="chart-canvas-wrap"><canvas id="chartE3"></canvas></div>
-      <div class="chart-note">시장 시그널(market_signal_viewed) = 홈 화면 시그널 목록에서 스크롤 시 노출만으로 카운트 (노출 기반, 대량). 종목 시그널(stock_signal_viewed) = 개별 종목 시그널을 클릭하여 상세 페이지 진입 시 카운트 (의도적 행동). 관심종목 등록은 2/23주부터 트래킹.</div>
+      <div class="chart-note">⚠️ 스케일 주의: 시장 시그널(~6000건)은 스크롤 노출 기반 자동 카운트, 종목 시그널(~1000건)은 클릭 기반 의도적 행동. 관심종목 등록은 2/23주부터 트래킹. 세 지표의 절대 수치 비교는 의미 없음.</div>
     </div>
     <div class="chart-box">
       <h3>E-6. Push 발송 vs 시그널 읽음 & CTR</h3>
       <div class="chart-canvas-wrap"><canvas id="chartE6"></canvas></div>
-      <div class="chart-note">CTR = 시그널 읽음 수 / Push 발송 수 × 100. Push 발송은 서버에서 전송 성공 건수, 시그널 읽음은 유저가 실제 조회한 건수. 이전 Push의 지연 읽음으로 100% 초과 가능.</div>
+      <div class="chart-note">Push 발송 = 서버에서 전송 성공 건수. 시그널 읽음 = 유저가 실제 조회한 건수 (Push 외 자발적 읽음 포함). CTR 100% 초과 가능: 이전 Push의 지연 읽음 + Push 외 경로 읽음 합산.</div>
     </div>
   </div>
   <!-- [NEW] 시그널 적중률 카드 -->
@@ -641,12 +612,12 @@
     <div class="compare-grid">
       <div class="accuracy-card" style="border-color:var(--blue);">
         <div class="acc-label">전체 시그널 적중률</div>
-        <div class="acc-value" style="color:var(--blue);">48.3%</div>
+        <div class="acc-value" style="color:var(--blue);">55.5%</div>
         <div class="acc-desc">전체 발생 시그널 중 방향 적중 비율</div>
       </div>
       <div class="accuracy-card" style="border-color:var(--green);">
         <div class="acc-label">기회포착 시그널 적중률</div>
-        <div class="acc-value" style="color:var(--green);">57.8%</div>
+        <div class="acc-value" style="color:var(--green);">46.1%</div>
         <div class="acc-desc">기회포착 유형 시그널 방향 적중 비율</div>
       </div>
     </div>
@@ -673,6 +644,7 @@
       <!-- [UPDATED] 경고 강화된 alert box -->
       <div class="alert-box warning">
         <div class="alert-title">&#9888;&#65039; 참고 지표 &mdash; 앱 재방문 기반 리텐션</div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">※ Day0=100%는 Amplitude 정의상 당연 (가입 이벤트 발생일). Day1=100%는 가입 직후 대부분 재방문했다는 의미.</div>
         이 서비스는 Push 알림으로 시그널을 소비하는 구조입니다. 앱 재방문 기반 리텐션(Day2 2.3%)은 참고 지표이며,
         실제 서비스 소비는 아래 지표로 판단합니다.<br>
         <span class="real-metric">Push 읽음률 49%</span>
@@ -690,24 +662,24 @@
     <div class="chart-box full">
       <h3>F-2. 주간 코호트별 리텐션 (가입주 &rarr; 앱 재방문)</h3>
       <div style="overflow-x:auto;" id="cohortHeatmapWrap"></div>
-      <div class="chart-note">W0-W1 100%는 가입 이벤트 특성상 자연. W2 이후 급락은 Push 기반 서비스의 구조적 특성.</div>
+      <div class="chart-note">⚠️ 이 테이블은 Amplitude "앱 재방문" 기준이며, 구독 해지 여부와 무관합니다. 각 주차별 코호트가 이후 주에 웹뷰를 다시 열었는지만 측정합니다. W0-W1 100%는 가입 직후 자연스러운 방문 패턴.</div>
     </div>
   </div>
 
-  <!-- [NEW] F-4. 해지 시점 분포 -->
+  <!-- [NEW] F-4. 해지 시점 분포 (전체 누적) -->
   <div style="margin-top:20px;">
     <div class="chart-grid">
       <div class="chart-box">
-        <h3>F-4. 해지 시점 분포 (After 기간: 2/13~)</h3>
+        <h3>F-4. 해지 시점 분포 (전체 누적, 3/11 기준)</h3>
         <div class="chart-canvas-wrap"><canvas id="chartF4"></canvas></div>
-        <div class="chart-note">당일 해지가 80% &mdash; 온보딩 첫 경험이 해지 방어의 핵심</div>
+        <div class="chart-note">전체 누적 해지 289건의 시점 분포 (Slack BE 리포트 3/11 기준). 당일+다음날 해지가 전체의 49.1%.</div>
       </div>
       <div class="chart-box" style="display:flex;flex-direction:column;justify-content:center;">
         <div style="text-align:center;">
-          <div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">After 기간 해지 31명 중</div>
-          <div style="font-size:48px;font-weight:700;color:var(--accent);">80.6%</div>
+          <div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">전체 해지 289건 중</div>
+          <div style="font-size:48px;font-weight:700;color:var(--accent);">40.1%</div>
           <div style="font-size:16px;font-weight:600;color:var(--accent);margin-top:4px;">당일(D0) 해지</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:16px;">D0: 25명 | D1+: 6명</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-top:16px;">D0: 116건 | D1: 26건 | D2+: 147건</div>
           <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">가입 첫날 경험이 유지를 결정합니다</div>
         </div>
       </div>
@@ -761,8 +733,25 @@
 </div><!-- /container -->
 
 <div class="footer">
-  최종 갱신: 2026-03-03 (CSV), Amplitude 실시간<br>
+  최종 갱신: 2026-03-11 (CSV), Amplitude 실시간<br>
   투자시그널 경영진 대시보드 | 퀀팃투자자문
+</div>
+
+<!-- Update Modal -->
+<div id="updateModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999;justify-content:center;align-items:center;">
+  <div style="background:var(--bg-card);border-radius:16px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;border:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <h3 style="font-size:18px;">📊 데이터 업데이트</h3>
+      <button onclick="document.getElementById('updateModal').style.display='none'" style="background:none;border:none;color:var(--text);font-size:24px;cursor:pointer;">&times;</button>
+    </div>
+    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Slack #mon_signal_user_data 채널의 최신 일일 리포트 데이터를 아래에 붙여넣으세요.</p>
+    <textarea id="updateData" placeholder="[Signal User Growth Report] 데이터를 여기에 붙여넣기..." style="width:100%;height:200px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;font-family:monospace;resize:vertical;"></textarea>
+    <div style="margin-top:16px;display:flex;gap:12px;">
+      <button onclick="parseAndUpdate()" style="background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;flex:1;">파싱 & 미리보기</button>
+      <button onclick="document.getElementById('updateModal').style.display='none'" style="background:var(--border);color:var(--text);border:none;padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer;">닫기</button>
+    </div>
+    <div id="updatePreview" style="margin-top:16px;font-size:13px;color:var(--text-secondary);"></div>
+  </div>
 </div>
 
 <script>
@@ -770,18 +759,18 @@
 // CSV DATA - Embedded as JavaScript arrays
 // =============================================
 const csvData = {
-  date: ["2025-12-17","2025-12-18","2025-12-19","2025-12-20","2025-12-21","2025-12-22","2025-12-23","2025-12-24","2025-12-25","2025-12-26","2025-12-27","2025-12-28","2025-12-29","2025-12-30","2025-12-31","2026-01-01","2026-01-02","2026-01-03","2026-01-04","2026-01-05","2026-01-06","2026-01-07","2026-01-08","2026-01-09","2026-01-10","2026-01-11","2026-01-12","2026-01-13","2026-01-14","2026-01-15","2026-01-16","2026-01-17","2026-01-18","2026-01-19","2026-01-20","2026-01-21","2026-01-22","2026-01-23","2026-01-24","2026-01-25","2026-01-26","2026-01-27","2026-01-28","2026-01-29","2026-01-30","2026-01-31","2026-02-01","2026-02-02","2026-02-03","2026-02-04","2026-02-05","2026-02-06","2026-02-07","2026-02-08","2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13","2026-02-14","2026-02-15","2026-02-16","2026-02-17","2026-02-18","2026-02-19","2026-02-20","2026-02-21","2026-02-22","2026-02-23","2026-02-24","2026-02-25","2026-02-26","2026-02-27","2026-02-28","2026-03-01","2026-03-02","2026-03-03"],
-  active_users: [7,10,9,9,9,9,24,32,36,38,46,54,60,58,72,80,85,92,95,99,105,98,102,106,111,114,116,117,122,127,127,129,130,137,142,147,162,165,171,171,176,176,181,192,192,191,192,195,193,195,195,195,194,196,197,202,202,215,216,216,217,226,230,232,233,233,238,242,251,253,255,261,261,260,262,279,275],
-  daily_signup: [3,0,0,0,0,0,14,17,4,7,7,8,22,5,16,9,12,7,6,12,8,4,6,11,3,8,5,8,7,6,4,6,2,11,9,14,24,3,10,2,14,4,8,18,9,1,3,9,2,7,3,2,1,0,7,7,5,18,4,1,1,12,8,3,7,8,8,7,16,6,6,12,3,1,4,23,3],
-  daily_churn: [0,0,1,0,0,4,14,7,0,5,2,0,13,6,4,2,5,1,2,8,3,10,4,5,1,2,6,5,1,4,2,3,1,4,7,7,6,4,2,1,9,5,3,6,9,3,1,6,4,5,3,2,2,0,4,3,4,6,2,2,1,3,3,0,8,7,3,3,7,4,4,6,3,2,2,6,7],
-  watchlist_users: [5,6,6,6,6,5,16,19,23,22,24,25,25,26,27,30,29,29,28,26,29,28,30,30,30,30,30,31,31,34,35,36,35,41,40,37,40,41,43,43,44,43,46,50,50,50,51,52,55,56,55,55,56,56,54,55,56,63,64,64,66,67,68,70,72,73,75,79,81,80,80,82,82,82,83,91,88],
-  push_success: [14,18,34,23,6,9,31,52,82,100,80,12,66,85,69,54,101,74,7,51,71,152,115,106,37,22,144,46,59,102,172,43,34,138,154,134,114,117,13,6,153,151,116,100,139,17,7,137,181,157,185,72,26,31,78,133,108,106,85,70,0,0,0,92,11,183,67,0,5,105,58,90,202,30,0,0,91],
-  signal_read: [21,20,10,3,4,135,230,155,15,19,13,33,69,42,27,7,89,7,3,24,31,52,37,21,30,72,738,533,217,57,54,19,20,60,61,74,176,68,33,10,247,50,48,72,57,5,40,55,132,36,53,16,1,146,78,43,31,42,344,145,48,19,44,50,142,121,63,44,111,143,171,74,177,29,9,30,74],
-  churn_day0: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,45,45,45,48,49,49,49,50,52,54,57,58,57,57,60,62,63,63,65,66,67,70,70,72,73,73,73,73,73,75,76,80,81,81,80,83,85,84,86,87,89,93,94,95,96,98,97,97,98,103,105],
-  inflow_total: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,14,1,6,0,4,5,3,11,10,4,3,3,2,6,12,12,2,2,2,8,11,3,11,17,2,0,0,1,2,8,44,19,1,15,9,0,0,0,0,0,0,0],
-  inflow_pass_push: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,14,1,6,0,4,5,3,11,10,4,3,3,2,6,12,12,2,2,2,8,11,3,5,17,2,0,0,1,2,8,44,19,1,15,9,0,0,0,0,0,0,0],
-  inflow_pass_menu: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-  rejoin_users: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,7,6,7,6,6,6,6,7,7,7,7,7,6,6,6,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,7,7,7,7,7,7,7,9,9,8,8,9,9,9,8,7,7,7,7]
+  date: ["2025-12-17","2025-12-18","2025-12-19","2025-12-20","2025-12-21","2025-12-22","2025-12-23","2025-12-24","2025-12-25","2025-12-26","2025-12-27","2025-12-28","2025-12-29","2025-12-30","2025-12-31","2026-01-01","2026-01-02","2026-01-03","2026-01-04","2026-01-05","2026-01-06","2026-01-07","2026-01-08","2026-01-09","2026-01-10","2026-01-11","2026-01-12","2026-01-13","2026-01-14","2026-01-15","2026-01-16","2026-01-17","2026-01-18","2026-01-19","2026-01-20","2026-01-21","2026-01-22","2026-01-23","2026-01-24","2026-01-25","2026-01-26","2026-01-27","2026-01-28","2026-01-29","2026-01-30","2026-01-31","2026-02-01","2026-02-02","2026-02-03","2026-02-04","2026-02-05","2026-02-06","2026-02-07","2026-02-08","2026-02-09","2026-02-10","2026-02-11","2026-02-12","2026-02-13","2026-02-14","2026-02-15","2026-02-16","2026-02-17","2026-02-18","2026-02-19","2026-02-20","2026-02-21","2026-02-22","2026-02-23","2026-02-24","2026-02-25","2026-02-26","2026-02-27","2026-02-28","2026-03-01","2026-03-02","2026-03-03","2026-03-04","2026-03-05","2026-03-06","2026-03-07","2026-03-08","2026-03-09","2026-03-10","2026-03-11"],
+  active_users: [7,10,9,9,9,9,24,32,36,38,46,54,60,58,72,80,85,92,95,99,105,98,102,106,111,114,116,117,122,127,127,129,130,137,142,147,162,165,171,171,176,176,181,192,192,191,192,195,193,195,195,195,194,196,197,202,202,215,216,216,217,226,230,232,233,233,238,242,251,253,255,261,261,260,262,279,275,277,287,289,295,297,303,301,302],
+  daily_signup: [3,0,0,0,0,0,14,17,4,7,7,8,22,5,16,9,12,7,6,12,8,4,6,11,3,8,5,8,7,6,4,6,2,11,9,14,24,3,10,2,14,4,8,18,9,1,3,9,2,7,3,2,1,0,7,7,5,18,4,1,1,12,8,3,7,8,8,7,16,6,6,12,3,1,4,23,3,6,12,4,10,4,12,6,12],
+  daily_churn: [0,0,1,0,0,4,14,7,0,5,2,0,13,6,4,2,5,1,2,8,3,10,4,5,1,2,6,5,1,4,2,3,1,4,7,7,6,4,2,1,9,5,3,6,9,3,1,6,4,5,3,2,2,0,4,3,4,6,2,2,1,3,3,0,8,7,3,3,7,4,4,6,3,2,2,6,7,4,2,2,5,1,6,9,10],
+  watchlist_users: [5,6,6,6,6,5,16,19,23,22,24,25,25,26,27,30,29,29,28,26,29,28,30,30,30,30,30,31,31,34,35,36,35,41,40,37,40,41,43,43,44,43,46,50,50,50,51,52,55,56,55,55,56,56,54,55,56,63,64,64,66,67,68,70,72,73,75,79,81,80,80,82,82,82,83,91,88,88,88,89,93,95,97,99,99],
+  push_success: [14,18,34,23,6,9,31,52,82,100,80,12,66,85,69,54,101,74,7,51,71,152,115,106,37,22,144,46,59,102,172,43,34,138,154,134,114,117,13,6,153,151,116,100,139,17,7,137,181,157,185,72,26,31,78,133,108,106,85,70,0,0,0,92,11,183,67,0,5,105,58,90,202,30,0,0,91,138,165,187,43,3,29,163,157],
+  signal_read: [21,20,10,3,4,135,230,155,15,19,13,33,69,42,27,7,89,7,3,24,31,52,37,21,30,72,738,533,217,57,54,19,20,60,61,74,176,68,33,10,247,50,48,72,57,5,40,55,132,36,53,16,1,146,78,43,31,42,344,145,48,19,44,50,142,121,63,44,111,143,171,74,177,29,9,30,74,113,90,119,20,4,36,88,74],
+  churn_day0: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,45,45,45,48,49,49,49,50,52,54,57,58,57,57,60,62,63,63,65,66,67,70,70,72,73,73,73,73,73,75,76,80,81,81,80,83,85,84,86,87,89,93,94,95,96,98,97,97,98,103,105,105,105,105,108,108,112,115,116],
+  inflow_total: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,14,1,6,0,4,5,3,11,10,4,3,3,2,6,12,12,2,2,2,8,11,3,11,17,2,0,0,1,2,8,44,19,1,15,9,0,0,0,0,0,0,12,28,34,32,0,7,2,30,21],
+  inflow_pass_push: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,14,1,6,0,4,5,3,11,10,4,3,3,2,6,12,12,2,2,2,8,11,3,5,17,2,0,0,1,2,8,44,19,1,15,9,0,0,0,0,0,0,12,28,34,32,0,7,2,30,21],
+  inflow_pass_menu: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+  rejoin_users: [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,7,6,7,6,6,6,6,7,7,7,7,7,6,6,6,5,5,5,5,5,5,5,5,5,5,5,5,5,5,6,6,6,7,7,7,7,7,7,7,9,9,8,8,9,9,9,8,7,7,7,7,7,8,8,8,8,8,8,8]
 };
 
 // Short date labels (MM/DD)
@@ -840,7 +829,7 @@ const beforeAfterData = {
   stockSignalViewed: { before: 47, after: 146, change: '+210%' },
   eventPageViews: { before: 14, after: 3408, change: '기능 신설' },
   stockSignalsPage: { before: 0, after: 2877, change: '신규' },
-  d0d1ChurnRate: { before: 24.8, after: 25.4, change: '미변화' },
+  d0ChurnRate: { before: 24.8, after: 19.7, change: '-20.6%' },
   signupConversion: { before: 0.66, after: null, change: '측정 필요' },
   watchlistRate: { before: 30, after: 32, change: '소폭 상승' }
 };
@@ -852,12 +841,12 @@ const enhancementStatus = [
   { name: '상세 가독성+탐색 퍼널', status: '확인', color: '#4CAF50', before: '47건/일', after: '146건/일' },
   { name: '종목 상세(신규)', status: '확인', color: '#4CAF50', before: '0', after: '2,877건/월' },
   { name: '서비스 소개 고도화', status: '미확인', color: '#F5A623', before: '0.66%', after: '측정 필요' },
-  { name: 'D0+D1 해지율', status: '미변화', color: '#F5A623', before: '24.8%', after: '25.4%' },
+  { name: 'D0 해지율', status: '개선', color: '#4CAF50', before: '24.8%', after: '19.7%' },
   { name: '관심종목 등록률', status: '소폭 상승', color: '#F5A623', before: '30%', after: '32%' }
 ];
 
 const nextSteps = [
-  { priority: 'P0', title: '가입 직후 관심종목 등록 유도', desc: '등록자 해지 0명. 등록률 32->50% 올리면 해지율 목표 달성 가능' },
+  { priority: 'P0', title: '가입 직후 관심종목 등록 유도', desc: '등록자 해지 0명. 등록률 32->40% 올리면 해지율 목표 달성 가능' },
   { priority: 'P0', title: '첫 시그널 즉시 경험', desc: 'Push 기다리지 않고 가입 즉시 인기 시그널 3개 표시' },
   { priority: 'P0', title: '가입 24시간 내 웰컴 Push', desc: '관심종목 기반 시그널 Push 발송' },
   { priority: 'P1', title: '해지 예측 변수 확보', desc: '관심종목/시그널읽음/Push별 해지율 코호트 분석' },
@@ -1067,7 +1056,7 @@ function renderGrowthCharts() {
       scales: {
         x: { stacked: true },
         y: {
-          beginAtZero: false,
+          stacked: true,
           ticks: { callback: v => Math.abs(v) }
         }
       },
@@ -1124,96 +1113,6 @@ function renderGrowthCharts() {
     론칭 이후 총 ${totalSignups}명 가입, ${totalChurns}명 해지. 현재 유료 가입자 ${latestActive}명.
     최근 1주 순증 ${csvData.daily_signup.slice(-7).reduce((a,b)=>a+b,0) - csvData.daily_churn.slice(-7).reduce((a,b)=>a+b,0)}명.
   `;
-}
-
-// =============================================
-// SECTION C: Inflow & Conversion
-// =============================================
-function renderInflowCharts() {
-  // Filter data from 1/21 onward (index 35)
-  const startIdx = csvData.date.indexOf('2026-01-21');
-  const inflowDates = csvData.date.slice(startIdx);
-  const inflowShort = inflowDates.map(d => { const p = d.split('-'); return parseInt(p[1])+'/'+parseInt(p[2]); });
-  const pushData = csvData.inflow_pass_push.slice(startIdx).map(v => v || 0);
-  const menuData = csvData.inflow_pass_menu.slice(startIdx).map(v => v || 0);
-  const totalData = csvData.inflow_total.slice(startIdx).map(v => v || 0);
-  const otherData = totalData.map((t, i) => Math.max(0, t - pushData[i] - menuData[i]));
-
-  const totalPush = pushData.reduce((a,b) => a+b, 0);
-  const totalMenu = menuData.reduce((a,b) => a+b, 0);
-  const totalOther = otherData.reduce((a,b) => a+b, 0);
-
-  // C-1: Doughnut
-  new Chart(document.getElementById('chartC1'), {
-    type: 'doughnut',
-    data: {
-      labels: ['Push 유입', '메뉴 유입', '기타'],
-      datasets: [{
-        data: [totalPush, totalMenu, totalOther],
-        backgroundColor: ['#4A90D9', '#4CAF50', '#F5A623'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      cutout: '60%',
-      plugins: {
-        legend: { position: 'bottom' }
-      }
-    }
-  });
-
-  // C-2: Stacked area
-  new Chart(document.getElementById('chartC2'), {
-    type: 'line',
-    data: {
-      labels: inflowShort,
-      datasets: [
-        { label: 'Push', data: pushData, borderColor: '#4A90D9', backgroundColor: 'rgba(74,144,217,0.3)', fill: true, borderWidth: 1.5, pointRadius: 1 },
-        { label: '메뉴', data: menuData, borderColor: '#4CAF50', backgroundColor: 'rgba(76,175,80,0.3)', fill: true, borderWidth: 1.5, pointRadius: 1 },
-        { label: '기타', data: otherData, borderColor: '#F5A623', backgroundColor: 'rgba(245,166,35,0.3)', fill: true, borderWidth: 1.5, pointRadius: 1 }
-      ]
-    },
-    options: {
-      responsive: true,
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: { ticks: { maxTicksLimit: 10 } },
-        y: { stacked: true, beginAtZero: true }
-      }
-    }
-  });
-
-  // C-4: Weekly conversion rate (PASS 유입 중 가입 비율, 자연유입 제외)
-  const signupWeekly = aggregateWeekly(inflowDates, csvData.daily_signup.slice(startIdx), 'sum');
-  const inflowWeekly = aggregateWeekly(inflowDates, totalData, 'sum');
-  const convRate = signupWeekly.map((s, i) => {
-    const inf = inflowWeekly[i].value;
-    if (inf <= 0) return null;
-    return Math.min(s.value / inf * 100, 100);
-  });
-
-  new Chart(document.getElementById('chartC4'), {
-    type: 'line',
-    data: {
-      labels: signupWeekly.map(w => w.label),
-      datasets: [{
-        label: '전환율 (%)',
-        data: convRate,
-        borderColor: '#9C27B0',
-        backgroundColor: 'rgba(156,39,176,0.1)',
-        fill: true,
-        borderWidth: 2,
-        spanGaps: true
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true, ticks: { callback: v => v != null ? v.toFixed(0) + '%' : '' } }
-      }
-    }
-  });
 }
 
 // =============================================
@@ -1332,7 +1231,7 @@ function renderActivationCharts() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 60,
+          max: 50,
           ticks: { callback: v => v + '%' }
         }
       },
@@ -1340,9 +1239,9 @@ function renderActivationCharts() {
         annotation: {
           annotations: {
             target: {
-              type: 'line', yMin: 50, yMax: 50,
+              type: 'line', yMin: 40, yMax: 40,
               borderColor: '#4CAF50', borderWidth: 2, borderDash: [6,4],
-              label: { display: true, content: '목표 50%', position: 'end', backgroundColor: '#4CAF50', font: { size: 10 } }
+              label: { display: true, content: '목표 40%', position: 'end', backgroundColor: '#4CAF50', font: { size: 10 } }
             },
             before: {
               type: 'line', yMin: 30, yMax: 30,
@@ -1545,14 +1444,14 @@ function renderRetentionCharts() {
   // [NEW] F-2: Cohort Retention Heatmap Table
   renderCohortHeatmap();
 
-  // [NEW] F-4: Churn Timing Distribution (Donut)
+  // [NEW] F-4: Churn Timing Distribution (Donut) - 전체 누적
   new Chart(document.getElementById('chartF4'), {
     type: 'doughnut',
     data: {
-      labels: ['D0 당일 해지 (25명)', 'D1+ 이후 해지 (6명)'],
+      labels: ['D0 당일 (116건)', 'D1 다음날 (26건)', 'D2 (13건)', 'D3-D5 (24건)', 'D6+ (110건)'],
       datasets: [{
-        data: [25, 6],
-        backgroundColor: ['#E33737', '#F5A623'],
+        data: [116, 26, 13, 24, 110],
+        backgroundColor: ['#E33737', '#F5A623', '#FFD54F', '#4A90D9', '#9C27B0'],
         borderWidth: 0,
         hoverOffset: 8
       }]
@@ -1568,7 +1467,7 @@ function renderRetentionCharts() {
         tooltip: {
           callbacks: {
             label: function(ctx) {
-              const total = 31;
+              const total = 289;
               const pct = (ctx.raw / total * 100).toFixed(1);
               return ctx.label + ' (' + pct + '%)';
             }
@@ -1749,11 +1648,81 @@ function renderEnhancement() {
 }
 
 // =============================================
+// DATA UPDATE PARSER
+// =============================================
+function parseAndUpdate() {
+  const raw = document.getElementById('updateData').value;
+  if (!raw.trim()) { alert('데이터를 붙여넣어주세요.'); return; }
+
+  const preview = document.getElementById('updatePreview');
+  try {
+    // Parse the Slack report format
+    const lines = raw.split('\n');
+    const data = {};
+
+    // Extract date
+    const dateMatch = raw.match(/(\d+)\/(\d+)\(.\)/);
+    if (dateMatch) {
+      data.month = parseInt(dateMatch[1]);
+      data.day = parseInt(dateMatch[2]);
+      data.date = `2026-${String(data.month).padStart(2,'0')}-${String(data.day).padStart(2,'0')}`;
+    }
+
+    // Extract user count
+    const userMatch = raw.match(/유저수:\s*(\d+)명/);
+    if (userMatch) data.active_users = parseInt(userMatch[1]);
+
+    // Extract signup/churn
+    const signupMatch = raw.match(/신규\s*(\d+)명/);
+    if (signupMatch) data.daily_signup = parseInt(signupMatch[1]);
+
+    const churnMatch = raw.match(/탈퇴\s*(\d+)명/);
+    if (churnMatch) data.daily_churn = parseInt(churnMatch[1]);
+
+    // Extract watchlist
+    const wlMatch = raw.match(/등록 유저:\s*(\d+)명/);
+    if (wlMatch) data.watchlist_users = parseInt(wlMatch[1]);
+
+    // Extract push
+    const pushMatch = raw.match(/성공\s*(\d+)건/);
+    if (pushMatch) data.push_success = parseInt(pushMatch[1]);
+
+    // Extract signal read
+    const readMatch = raw.match(/시그널 읽음:\s*(\d+)건/);
+    if (readMatch) data.signal_read = parseInt(readMatch[1]);
+
+    // Extract D0 churn (cumulative)
+    const d0Match = raw.match(/당일:\s*(\d+)건/);
+    if (d0Match) data.churn_day0 = parseInt(d0Match[1]);
+
+    // Extract rejoin
+    const rejoinMatch = raw.match(/재가입자:\s*(\d+)명/);
+    if (rejoinMatch) data.rejoin_users = parseInt(rejoinMatch[1]);
+
+    // Show preview
+    let html = '<div style="background:var(--bg);padding:16px;border-radius:8px;margin-top:8px;">';
+    html += '<strong style="color:var(--green);">✅ 파싱 결과:</strong><br><br>';
+    html += `날짜: ${data.date || '?'}<br>`;
+    html += `유저수: ${data.active_users || '?'}명<br>`;
+    html += `신규: ${data.daily_signup || '?'}명 / 해지: ${data.daily_churn || '?'}명<br>`;
+    html += `관심종목 유저: ${data.watchlist_users || '?'}명<br>`;
+    html += `Push 성공: ${data.push_success || '?'}건<br>`;
+    html += `시그널 읽음: ${data.signal_read || '?'}건<br>`;
+    html += `D0 해지(누적): ${data.churn_day0 || '?'}건<br>`;
+    html += `재가입자: ${data.rejoin_users || '?'}명<br><br>`;
+    html += '<span style="color:var(--orange);">⚠️ 이 데이터를 대시보드에 반영하려면, index.html의 csvData 배열에 위 값들을 추가한 후 git push 해주세요.</span>';
+    html += '</div>';
+    preview.innerHTML = html;
+  } catch(e) {
+    preview.innerHTML = '<span style="color:var(--accent);">파싱 오류: ' + e.message + '</span>';
+  }
+}
+
+// =============================================
 // INIT
 // =============================================
 renderKPICards();
 renderGrowthCharts();
-renderInflowCharts();
 renderActivationCharts();
 renderEngagementCharts();
 renderRetentionCharts();
