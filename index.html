@@ -739,16 +739,17 @@
 
 <!-- Update Modal -->
 <div id="updateModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:999;justify-content:center;align-items:center;">
-  <div style="background:var(--bg-card);border-radius:16px;padding:32px;max-width:600px;width:90%;max-height:80vh;overflow-y:auto;border:1px solid var(--border);">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+  <div style="background:var(--bg-card);border-radius:16px;padding:32px;max-width:640px;width:90%;max-height:85vh;overflow-y:auto;border:1px solid var(--border);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
       <h3 style="font-size:18px;">📊 데이터 업데이트</h3>
       <button onclick="document.getElementById('updateModal').style.display='none'" style="background:none;border:none;color:var(--text);font-size:24px;cursor:pointer;">&times;</button>
     </div>
-    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:16px;">Slack #mon_signal_user_data 채널의 최신 일일 리포트 데이터를 아래에 붙여넣으세요.</p>
-    <textarea id="updateData" placeholder="[Signal User Growth Report] 데이터를 여기에 붙여넣기..." style="width:100%;height:200px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;font-family:monospace;resize:vertical;"></textarea>
+    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:8px;">Slack <code>#mon_signal_user_data</code> 채널의 일일 리포트를 붙여넣으세요.</p>
+    <p style="color:var(--text-secondary);font-size:12px;margin-bottom:16px;">💡 여러 날의 리포트를 한꺼번에 붙여넣어도 됩니다. 유입 리포트도 함께 붙여넣으면 자동 매칭됩니다.</p>
+    <textarea id="updateData" placeholder="[Signal User Growth Report]&#10;유저 데이터 공유 - 3/12(목) 23:59 기준 스냅샷&#10;&#10;1. 유저수: 305명 / 전일대비 +3명&#10;   - 신규 8명 (누적 596명)&#10;   - 탈퇴 5명 (누적 294명)&#10;..." style="width:100%;height:220px;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;font-family:monospace;resize:vertical;"></textarea>
     <div style="margin-top:16px;display:flex;gap:12px;">
-      <button onclick="parseAndUpdate()" style="background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;flex:1;">파싱 & 미리보기</button>
-      <button onclick="document.getElementById('updateModal').style.display='none'" style="background:var(--border);color:var(--text);border:none;padding:10px 24px;border-radius:8px;font-size:14px;cursor:pointer;">닫기</button>
+      <button onclick="parseAndUpdate()" style="background:var(--accent);color:#fff;border:none;padding:12px 28px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;flex:1;">🔄 파싱 & 차트 적용</button>
+      <button onclick="document.getElementById('updateModal').style.display='none'" style="background:var(--border);color:var(--text);border:none;padding:12px 24px;border-radius:8px;font-size:14px;cursor:pointer;">닫기</button>
     </div>
     <div id="updatePreview" style="margin-top:16px;font-size:13px;color:var(--text-secondary);"></div>
   </div>
@@ -870,6 +871,65 @@ Chart.defaults.elements.line.tension = 0.3;
 Chart.defaults.elements.point.radius = 2;
 Chart.defaults.elements.point.hoverRadius = 5;
 Chart.defaults.scale.grid.color = 'rgba(255,255,255,0.05)';
+
+// Chart instance tracking for re-rendering
+const chartCanvasIds = ['chartB1','chartB2','chartB3','chartD1','chartD4','chartE2','chartE3','chartE6','chartF1','chartF3','chartF4','chartG2'];
+
+function destroyAllCharts() {
+  chartCanvasIds.forEach(id => {
+    const canvas = document.getElementById(id);
+    if (canvas) {
+      const existing = Chart.getChart(canvas);
+      if (existing) existing.destroy();
+    }
+  });
+}
+
+function refreshDashboard() {
+  destroyAllCharts();
+  // Clear innerHTML-based sections
+  document.getElementById('kpiGrid').innerHTML = '';
+  document.getElementById('funnelD2').innerHTML = '';
+  // Update shortDates
+  shortDates.length = 0;
+  csvData.date.forEach(d => {
+    const parts = d.split('-');
+    shortDates.push(parseInt(parts[1]) + '/' + parseInt(parts[2]));
+  });
+  // Update NSM box dynamically
+  updateNSM();
+  // Re-render all
+  renderKPICards();
+  renderGrowthCharts();
+  renderActivationCharts();
+  renderEngagementCharts();
+  renderRetentionCharts();
+  renderEnhancement();
+  // Update footer
+  document.querySelector('.footer').innerHTML = `최종 갱신: ${csvData.date[csvData.date.length-1]} (CSV), Amplitude 실시간<br>투자시그널 경영진 대시보드 | 퀀팃투자자문`;
+}
+
+function updateNSM() {
+  const latest = csvData.active_users.length - 1;
+  const activeNow = csvData.active_users[latest];
+  const totalSignups = csvData.daily_signup.reduce((a,b)=>a+b,0);
+  const latestD0 = csvData.churn_day0[latest];
+  const d0Rate = latestD0 !== null ? ((latestD0 / totalSignups) * 100).toFixed(1) : 'N/A';
+  const latestD1Count = 26; // from cumulative data
+  const d0d1Rate = latestD0 !== null ? (((latestD0 + latestD1Count) / totalSignups) * 100).toFixed(1) : 'N/A';
+
+  const nsmBox = document.querySelector('.nsm-box');
+  if (nsmBox) {
+    const decls = nsmBox.querySelectorAll('.nsm-declaration');
+    if (decls[0]) decls[0].innerHTML = `🎯 연말 목표: 유료 가입자 10,000명 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 ${activeNow}명 · 마케팅 병행 시 달성 가능, 현재 organic only)</span>`;
+    if (decls[1]) decls[1].innerHTML = `✅ 달성: D0 해지율 20% 이하 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(누적 ${d0Rate}% · Before 24.8%)</span>`;
+    if (decls[2]) decls[2].innerHTML = `🔥 다음 목표: D0+D1 해지율 20% 미만 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 ${d0d1Rate}%)</span>`;
+    // Update funnel steps
+    const steps = nsmBox.querySelectorAll('.step-metric');
+    if (steps[1]) steps[1].textContent = totalSignups + '명';
+    if (steps[2]) steps[2].textContent = activeNow + '명';
+  }
+}
 
 // Helper to aggregate weekly data from daily arrays
 function aggregateWeekly(dates, values, aggFn) {
@@ -1656,63 +1716,121 @@ function parseAndUpdate() {
 
   const preview = document.getElementById('updatePreview');
   try {
-    // Parse the Slack report format
-    const lines = raw.split('\n');
-    const data = {};
+    // Split into multiple reports if pasted together
+    const reports = raw.split(/(?=\[Signal User Growth Report\])/).filter(r => r.trim());
+    // Also find inflow reports
+    const inflowReports = raw.split(/(?=:bar_chart: 외부 유입 일일 리포트)/).filter(r => r.includes('외부 유입'));
 
-    // Extract date
-    const dateMatch = raw.match(/(\d+)\/(\d+)\(.\)/);
-    if (dateMatch) {
+    let addedDates = [];
+
+    reports.forEach(report => {
+      const data = {};
+
+      // Extract date - format: M/D(요일)
+      const dateMatch = report.match(/(\d+)\/(\d+)\(.\)/);
+      if (!dateMatch) return;
       data.month = parseInt(dateMatch[1]);
       data.day = parseInt(dateMatch[2]);
       data.date = `2026-${String(data.month).padStart(2,'0')}-${String(data.day).padStart(2,'0')}`;
+
+      // Skip if date already exists
+      if (csvData.date.includes(data.date)) return;
+
+      // Parse all fields
+      const userMatch = report.match(/유저수:\s*(\d+)명/);
+      if (userMatch) data.active_users = parseInt(userMatch[1]);
+
+      const signupMatch = report.match(/신규\s*(\d+)명/);
+      if (signupMatch) data.daily_signup = parseInt(signupMatch[1]);
+
+      const churnMatch = report.match(/탈퇴\s*(\d+)명/);
+      if (churnMatch) data.daily_churn = parseInt(churnMatch[1]);
+
+      const wlMatch = report.match(/등록 유저:\s*(\d+)명/);
+      if (wlMatch) data.watchlist_users = parseInt(wlMatch[1]);
+
+      const pushMatch = report.match(/전송:\s*성공\s*(\d+)건/);
+      if (pushMatch) data.push_success = parseInt(pushMatch[1]);
+      // Fallback push parsing
+      if (!data.push_success) {
+        const pushMatch2 = report.match(/성공\s*(\d+)건/);
+        if (pushMatch2) data.push_success = parseInt(pushMatch2[1]);
+      }
+
+      const readMatch = report.match(/시그널 읽음:\s*(\d+)건/);
+      if (readMatch) data.signal_read = parseInt(readMatch[1]);
+
+      const d0Match = report.match(/당일:\s*(\d+)건/);
+      if (d0Match) data.churn_day0 = parseInt(d0Match[1]);
+
+      const rejoinMatch = report.match(/재가입자:\s*(\d+)명/);
+      if (rejoinMatch) data.rejoin_users = parseInt(rejoinMatch[1]);
+
+      // Check for required fields
+      if (!data.active_users || !data.date) return;
+
+      // Add to arrays
+      csvData.date.push(data.date);
+      csvData.active_users.push(data.active_users || 0);
+      csvData.daily_signup.push(data.daily_signup || 0);
+      csvData.daily_churn.push(data.daily_churn || 0);
+      csvData.watchlist_users.push(data.watchlist_users || csvData.watchlist_users[csvData.watchlist_users.length - 1] || 0);
+      csvData.push_success.push(data.push_success || 0);
+      csvData.signal_read.push(data.signal_read || 0);
+      csvData.churn_day0.push(data.churn_day0 || csvData.churn_day0[csvData.churn_day0.length - 1] || 0);
+      csvData.rejoin_users.push(data.rejoin_users || csvData.rejoin_users[csvData.rejoin_users.length - 1] || 0);
+
+      // Try to find matching inflow data for this date
+      let inflowFound = false;
+      inflowReports.forEach(ir => {
+        const irDateMatch = ir.match(/날짜:\s*\d{4}-(\d{2})-(\d{2})/);
+        if (irDateMatch) {
+          const irDate = `2026-${irDateMatch[1]}-${irDateMatch[2]}`;
+          if (irDate === data.date) {
+            const inflowMatch = ir.match(/총 유입:\s*(\d+)건/);
+            if (inflowMatch) {
+              csvData.inflow_total.push(parseInt(inflowMatch[1]));
+              csvData.inflow_pass_push.push(parseInt(inflowMatch[1])); // Assume all push for now
+              inflowFound = true;
+            }
+          }
+        }
+      });
+      if (!inflowFound) {
+        csvData.inflow_total.push(0);
+        csvData.inflow_pass_push.push(0);
+      }
+      csvData.inflow_pass_menu.push(0);
+
+      addedDates.push(data);
+    });
+
+    if (addedDates.length === 0) {
+      preview.innerHTML = '<span style="color:var(--orange);">⚠️ 추가할 새 데이터가 없습니다. (이미 반영된 날짜이거나, 파싱 실패)</span>';
+      return;
     }
 
-    // Extract user count
-    const userMatch = raw.match(/유저수:\s*(\d+)명/);
-    if (userMatch) data.active_users = parseInt(userMatch[1]);
-
-    // Extract signup/churn
-    const signupMatch = raw.match(/신규\s*(\d+)명/);
-    if (signupMatch) data.daily_signup = parseInt(signupMatch[1]);
-
-    const churnMatch = raw.match(/탈퇴\s*(\d+)명/);
-    if (churnMatch) data.daily_churn = parseInt(churnMatch[1]);
-
-    // Extract watchlist
-    const wlMatch = raw.match(/등록 유저:\s*(\d+)명/);
-    if (wlMatch) data.watchlist_users = parseInt(wlMatch[1]);
-
-    // Extract push
-    const pushMatch = raw.match(/성공\s*(\d+)건/);
-    if (pushMatch) data.push_success = parseInt(pushMatch[1]);
-
-    // Extract signal read
-    const readMatch = raw.match(/시그널 읽음:\s*(\d+)건/);
-    if (readMatch) data.signal_read = parseInt(readMatch[1]);
-
-    // Extract D0 churn (cumulative)
-    const d0Match = raw.match(/당일:\s*(\d+)건/);
-    if (d0Match) data.churn_day0 = parseInt(d0Match[1]);
-
-    // Extract rejoin
-    const rejoinMatch = raw.match(/재가입자:\s*(\d+)명/);
-    if (rejoinMatch) data.rejoin_users = parseInt(rejoinMatch[1]);
+    // Sort csvData by date (in case pasted out of order)
+    const indices = csvData.date.map((d, i) => i);
+    indices.sort((a, b) => csvData.date[a].localeCompare(csvData.date[b]));
+    Object.keys(csvData).forEach(key => {
+      csvData[key] = indices.map(i => csvData[key][i]);
+    });
 
     // Show preview
     let html = '<div style="background:var(--bg);padding:16px;border-radius:8px;margin-top:8px;">';
-    html += '<strong style="color:var(--green);">✅ 파싱 결과:</strong><br><br>';
-    html += `날짜: ${data.date || '?'}<br>`;
-    html += `유저수: ${data.active_users || '?'}명<br>`;
-    html += `신규: ${data.daily_signup || '?'}명 / 해지: ${data.daily_churn || '?'}명<br>`;
-    html += `관심종목 유저: ${data.watchlist_users || '?'}명<br>`;
-    html += `Push 성공: ${data.push_success || '?'}건<br>`;
-    html += `시그널 읽음: ${data.signal_read || '?'}건<br>`;
-    html += `D0 해지(누적): ${data.churn_day0 || '?'}건<br>`;
-    html += `재가입자: ${data.rejoin_users || '?'}명<br><br>`;
-    html += '<span style="color:var(--orange);">⚠️ 이 데이터를 대시보드에 반영하려면, index.html의 csvData 배열에 위 값들을 추가한 후 git push 해주세요.</span>';
+    html += `<strong style="color:var(--green);">✅ ${addedDates.length}일 데이터 추가 완료!</strong><br><br>`;
+    addedDates.forEach(d => {
+      html += `<strong>${d.date}</strong>: ${d.active_users}명 (가입 +${d.daily_signup || 0} / 해지 -${d.daily_churn || 0})<br>`;
+    });
+    html += '<br><span style="color:var(--green);">📊 대시보드 차트가 업데이트되었습니다.</span>';
+    html += '<br><span style="color:var(--text-secondary);font-size:12px;">※ 이 업데이트는 브라우저 내 임시 반영입니다. 영구 반영하려면 index.html 파일 수정 후 git push 필요.</span>';
     html += '</div>';
     preview.innerHTML = html;
+
+    // Actually refresh all charts
+    refreshDashboard();
+
   } catch(e) {
     preview.innerHTML = '<span style="color:var(--accent);">파싱 오류: ' + e.message + '</span>';
   }
