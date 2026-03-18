@@ -419,6 +419,100 @@
     color: var(--text-secondary);
     margin-top: 8px;
   }
+  /* Floating refresh button */
+  .refresh-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 200;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 28px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(227,55,55,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .refresh-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(227,55,55,0.5);
+  }
+  /* Modal overlay */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 300;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    width: 90%;
+    max-width: 700px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal-box h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text);
+  }
+  .modal-box textarea {
+    width: 100%;
+    height: 300px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 12px;
+    resize: vertical;
+  }
+  .modal-box textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    justify-content: flex-end;
+  }
+  .modal-actions button {
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+  }
+  .modal-actions button:hover { opacity: 0.85; }
+  .modal-actions .btn-apply {
+    background: var(--accent);
+    color: #fff;
+  }
+  .modal-actions .btn-close {
+    background: var(--border);
+    color: var(--text);
+  }
+  .modal-status {
+    font-size: 13px;
+    color: var(--green);
+    margin-top: 12px;
+    min-height: 20px;
+  }
 </style>
 </head>
 <body>
@@ -442,7 +536,7 @@
   <h1>투자시그널 경영진 대시보드</h1>
   <p>SKT PASS 입점 투자 정보 서비스 | 론칭 2025.12.23 | 고도화 2026.02.13</p>
   <div class="service-desc">
-    SKT PASS 앱 내에서 월 8,800원에 제공하는 주식 투자 정보 유료 구독 서비스.<br>
+    SKT PASS 앱 내에서 월 8,800원에 제공하는 주식 투자 정보 유료 가입 서비스.<br>
     주요 종목의 투자 시그널을 실시간으로 제공하며, 2025.12.23 론칭 후 서비스 고도화 진행 중.
   </div>
 </div>
@@ -456,43 +550,8 @@
     <span class="badge">KPI</span>
   </div>
 
-  <!-- [NEW] North Star Metric + Full Funnel Flow -->
-  <div class="nsm-box">
-    <div class="nsm-declaration" style="font-size:18px;">🎯 연말 목표: 유료 가입자 10,000명 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 275명 · 마케팅 병행 시 달성 가능, 현재 organic only)</span></div>
-    <div class="nsm-declaration" style="font-size:15px;color:var(--green);margin-top:4px;">✅ 달성: D0 해지율 20% 이하 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(누적 19.1% · Before 24.8%)</span></div>
-    <div class="nsm-declaration" style="font-size:15px;color:var(--orange);margin-top:4px;">🔥 다음 목표: D0+D1 해지율 20% 미만 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 25.4%)</span></div>
-    <div class="full-funnel-flow">
-      <div class="funnel-step">
-        <div class="step-name">PASS 유입</div>
-        <div class="step-metric">Push</div>
-        <div class="step-sub">유입의 93%+</div>
-      </div>
-      <div class="funnel-arrow">&rarr;</div>
-      <div class="funnel-step">
-        <div class="step-name">소개페이지</div>
-        <div class="step-metric">18,635</div>
-        <div class="step-sub">월간 UV</div>
-      </div>
-      <div class="funnel-arrow">&rarr;</div>
-      <div class="funnel-step">
-        <div class="step-name">가입</div>
-        <div class="step-metric">551명</div>
-        <div class="step-sub">누적 (전환 1.0%)</div>
-      </div>
-      <div class="funnel-arrow">&rarr;</div>
-      <div class="funnel-step" style="border-color:var(--accent);">
-        <div class="step-name">관심종목 등록</div>
-        <div class="step-metric" style="color:var(--green);">32%</div>
-        <div class="step-sub">등록자 해지 0명</div>
-      </div>
-      <div class="funnel-arrow">&rarr;</div>
-      <div class="funnel-step" style="border-color:var(--green);">
-        <div class="step-name">가입 유지</div>
-        <div class="step-metric" style="color:var(--green);">275명</div>
-        <div class="step-sub">활성 가입자</div>
-      </div>
-    </div>
-  </div>
+  <!-- [NEW] North Star Metric + Full Funnel Flow (JS-rendered) -->
+  <div class="nsm-box" id="topFunnelFlow"></div>
 
   <div class="kpi-grid" id="kpiGrid"></div>
   <div class="insight-bar">
@@ -577,27 +636,7 @@
       <div id="funnelD2" style="padding:8px 0;"></div>
     </div>
   </div>
-  <div style="margin-top:20px;">
-    <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">D-3. 관심종목 등록자 vs 미등록자</h3>
-    <div class="compare-grid">
-      <div class="compare-card" style="border-color:var(--green);">
-        <h4 style="color:var(--green);">✅ 관심종목 등록자 (49명)</h4>
-        <div class="big-num" style="color:var(--green);">해지 0명</div>
-        <div class="sub-stat" style="margin-top:12px;font-size:14px;">해지율 <strong style="color:var(--green);">0%</strong></div>
-        <div class="sub-stat">Day3 리텐션: 12.5%</div>
-        <div class="sub-stat">인게이지먼트: 미등록 대비 30~58배</div>
-        <div class="sub-stat" style="margin-top:8px;font-size:12px;color:var(--green);">→ 가입 직후 관심종목을 등록한 유저는<br>단 한 명도 해지하지 않음</div>
-      </div>
-      <div class="compare-card" style="border-color:var(--accent);">
-        <h4 style="color:var(--accent);">❌ 미등록자 (226명)</h4>
-        <div class="big-num" style="color:var(--accent);">해지 54명</div>
-        <div class="sub-stat" style="margin-top:12px;font-size:14px;">해지율 <strong style="color:var(--accent);">23.9%</strong></div>
-        <div class="sub-stat">Day3 리텐션: 1.1%</div>
-        <div class="sub-stat">인게이지먼트: 기준 (1x)</div>
-        <div class="sub-stat" style="margin-top:8px;font-size:12px;color:var(--accent);">→ 관심종목 미등록 시 해지 확률 24배 ↑<br>온보딩에서 등록 유도가 최우선</div>
-      </div>
-    </div>
-  </div>
+  <div style="margin-top:20px;" id="compareD3"></div>
   <!-- [NEW] D-4. 관심종목 등록률 주간 추이 -->
   <div style="margin-top:20px;">
     <div class="chart-box">
@@ -605,11 +644,8 @@
       <div class="chart-canvas-wrap"><canvas id="chartD4"></canvas></div>
     </div>
   </div>
-  <!-- [NEW] D 섹션 인사이트 바 -->
-  <div class="insight-bar">
-    <span class="dot"></span>
-    가입 189명 중 시그널 조회 19.6%, 관심종목 등록 2.6%. 온보딩에서 관심종목 등록으로 바로 유도해야.
-  </div>
+  <!-- [NEW] D 섹션 인사이트 바 (JS-rendered) -->
+  <div class="insight-bar" id="insightD"></div>
 </div>
 
 <!-- ============================================= -->
@@ -702,15 +738,7 @@
         <div class="chart-canvas-wrap"><canvas id="chartF4"></canvas></div>
         <div class="chart-note">당일 해지가 80% &mdash; 온보딩 첫 경험이 해지 방어의 핵심</div>
       </div>
-      <div class="chart-box" style="display:flex;flex-direction:column;justify-content:center;">
-        <div style="text-align:center;">
-          <div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">After 기간 해지 31명 중</div>
-          <div style="font-size:48px;font-weight:700;color:var(--accent);">80.6%</div>
-          <div style="font-size:16px;font-weight:600;color:var(--accent);margin-top:4px;">당일(D0) 해지</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:16px;">D0: 25명 | D1+: 6명</div>
-          <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">가입 첫날 경험이 유지를 결정합니다</div>
-        </div>
-      </div>
+      <div class="chart-box" style="display:flex;flex-direction:column;justify-content:center;" id="churnF4Stats"></div>
     </div>
   </div>
 
@@ -760,9 +788,26 @@
 
 </div><!-- /container -->
 
-<div class="footer">
+<div class="footer" id="dashFooter">
   최종 갱신: 2026-03-03 (CSV), Amplitude 실시간<br>
   투자시그널 경영진 대시보드 | 퀀팃투자자문
+</div>
+
+<!-- Floating refresh button -->
+<button class="refresh-btn" onclick="document.getElementById('refreshModal').classList.add('active')">&#x1F4CA; 데이터 갱신</button>
+
+<!-- Refresh modal -->
+<div class="modal-overlay" id="refreshModal">
+  <div class="modal-box">
+    <h3>&#x1F4CA; CSV 데이터 갱신</h3>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">slack_daily_stats_all.csv 형식의 데이터를 붙여넣으세요. (헤더 포함)</p>
+    <textarea id="csvInput" placeholder="date,active_users,daily_change,daily_signup,total_signup,daily_churn,total_churn,watchlist_total,watchlist_new,watchlist_users,signal_events,kr_signals,kr_opportunity,kr_risk,kr_flow,us_signals,us_opportunity,us_risk,us_flow,push_success,push_fail,signal_read,churn_total_cumulative,churn_day0,rejoin_users,inflow_total,inflow_pass_push,inflow_pass_menu"></textarea>
+    <div class="modal-status" id="modalStatus"></div>
+    <div class="modal-actions">
+      <button class="btn-close" onclick="document.getElementById('refreshModal').classList.remove('active')">닫기</button>
+      <button class="btn-apply" onclick="applyCSVData()">적용</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -785,14 +830,14 @@ const csvData = {
 };
 
 // Short date labels (MM/DD)
-const shortDates = csvData.date.map(d => {
+let shortDates = csvData.date.map(d => {
   const parts = d.split('-');
   return parseInt(parts[1]) + '/' + parseInt(parts[2]);
 });
 
 // Global milestone indices
-const launchIdx = csvData.date.indexOf('2025-12-23');
-const enhanceIdx = csvData.date.indexOf('2026-02-13');
+let launchIdx = csvData.date.indexOf('2025-12-23');
+let enhanceIdx = csvData.date.indexOf('2026-02-13');
 
 // =============================================
 // AMPLITUDE DATA
@@ -863,6 +908,15 @@ const nextSteps = [
   { priority: 'P1', title: '해지 예측 변수 확보', desc: '관심종목/시그널읽음/Push별 해지율 코호트 분석' },
   { priority: 'P2', title: 'sign-up 전환율 측정', desc: '소개화면 고도화 효과 Before 0.66% -> After 측정' }
 ];
+
+// Global chart instance tracking for data refresh
+// Destroy all existing Chart.js instances by scanning all canvases
+function destroyAllCharts() {
+  document.querySelectorAll('canvas').forEach(c => {
+    const existing = Chart.getChart(c);
+    if (existing) existing.destroy();
+  });
+}
 
 // =============================================
 // UTILITY FUNCTIONS
@@ -1285,9 +1339,9 @@ function renderActivationCharts() {
   const funnelEl = document.getElementById('funnelD2');
   const funnelSteps = [
     { name: '소개페이지 접근', eventName: '[Amplitude] Page Viewed (sign-up)', value: 18635, pct: 100 },
-    { name: '가입 완료', eventName: 'subscription_started', value: 190, pct: 1.0 },
-    { name: '종목 시그널 조회', eventName: 'stock_signal_viewed', value: 71, pct: 0.38 },
-    { name: '관심종목 등록', eventName: 'watchlist_stock_added', value: 5, pct: 0.027 }
+    { name: '가입 완료', eventName: 'subscription_started', value: activationFunnel.subscription_started, pct: activationFunnel.subscription_started/18635*100 },
+    { name: '종목 시그널 조회', eventName: 'stock_signal_viewed', value: activationFunnel.stock_signal_viewed, pct: activationFunnel.stock_signal_pct },
+    { name: '관심종목 등록', eventName: 'watchlist_stock_added', value: activationFunnel.watchlist_stock_added, pct: activationFunnel.watchlist_pct }
   ];
   const colors = ['#4A90D9', '#4CAF50', '#F5A623', '#E33737'];
   funnelSteps.forEach((step, i) => {
@@ -1545,13 +1599,21 @@ function renderRetentionCharts() {
   // [NEW] F-2: Cohort Retention Heatmap Table
   renderCohortHeatmap();
 
-  // [NEW] F-4: Churn Timing Distribution (Donut)
+  // [NEW] F-4: Churn Timing Distribution (Donut) - dynamic
+  const afterChurnsF4 = csvData.daily_churn.slice(enhanceIdx).reduce((a,b) => a+b, 0);
+  const d0AtEnhanceF4 = csvData.churn_day0[enhanceIdx];
+  const latestF4 = csvData.churn_day0.length - 1;
+  const d0AtEndF4 = csvData.churn_day0[latestF4];
+  let afterD0F4 = 0;
+  if (d0AtEnhanceF4 !== null && d0AtEndF4 !== null) afterD0F4 = d0AtEndF4 - d0AtEnhanceF4;
+  const afterD1plusF4 = afterChurnsF4 - afterD0F4;
+
   new Chart(document.getElementById('chartF4'), {
     type: 'doughnut',
     data: {
-      labels: ['D0 당일 해지 (25명)', 'D1+ 이후 해지 (6명)'],
+      labels: ['D0 당일 해지 (' + afterD0F4 + '명)', 'D1+ 이후 해지 (' + afterD1plusF4 + '명)'],
       datasets: [{
-        data: [25, 6],
+        data: [afterD0F4, afterD1plusF4],
         backgroundColor: ['#E33737', '#F5A623'],
         borderWidth: 0,
         hoverOffset: 8
@@ -1568,8 +1630,8 @@ function renderRetentionCharts() {
         tooltip: {
           callbacks: {
             label: function(ctx) {
-              const total = 31;
-              const pct = (ctx.raw / total * 100).toFixed(1);
+              const total = afterChurnsF4;
+              const pct = total > 0 ? (ctx.raw / total * 100).toFixed(1) : '0';
               return ctx.label + ' (' + pct + '%)';
             }
           }
@@ -1749,8 +1811,230 @@ function renderEnhancement() {
 }
 
 // =============================================
+// DYNAMIC SECTIONS (computed from csvData)
+// =============================================
+
+function renderTopFunnelFlow() {
+  const latest = csvData.active_users.length - 1;
+  const totalSignups = csvData.daily_signup.reduce((a,b) => a+b, 0);
+  const activeNow = csvData.active_users[latest];
+  const convRate = (totalSignups / 18635 * 100).toFixed(1);
+  const wlLast = csvData.watchlist_users[latest];
+  const wlRatio = activeNow > 0 ? (wlLast / activeNow * 100).toFixed(0) : 'N/A';
+
+  // D0 churn rate (cumulative)
+  const latestD0 = csvData.churn_day0[latest];
+  const d0Rate = latestD0 !== null ? (latestD0 / totalSignups * 100).toFixed(1) : 'N/A';
+
+  const el = document.getElementById('topFunnelFlow');
+  el.innerHTML = `
+    <div class="nsm-declaration" style="font-size:18px;">\u{1F3AF} 연말 목표: 유료 가입자 10,000명 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 ${activeNow}명 \u00B7 마케팅 병행 시 달성 가능, 현재 organic only)</span></div>
+    <div class="nsm-declaration" style="font-size:15px;color:var(--green);margin-top:4px;">\u2705 달성: D0 해지율 20% 이하 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(누적 ${d0Rate}% \u00B7 Before 24.8%)</span></div>
+    <div class="nsm-declaration" style="font-size:15px;color:var(--orange);margin-top:4px;">\u{1F525} 다음 목표: D0+D1 해지율 20% 미만 <span style="font-size:13px;color:var(--text-secondary);font-weight:400;">(현재 25.4%)</span></div>
+    <div class="full-funnel-flow">
+      <div class="funnel-step">
+        <div class="step-name">PASS 유입</div>
+        <div class="step-metric">Push</div>
+        <div class="step-sub">유입의 93%+</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step">
+        <div class="step-name">소개페이지</div>
+        <div class="step-metric">18,635</div>
+        <div class="step-sub">월간 UV</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step">
+        <div class="step-name">가입</div>
+        <div class="step-metric">${totalSignups}명</div>
+        <div class="step-sub">누적 (전환 ${convRate}%)</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step" style="border-color:var(--accent);">
+        <div class="step-name">관심종목 등록</div>
+        <div class="step-metric" style="color:var(--green);">${wlRatio}%</div>
+        <div class="step-sub">등록자 해지 0명</div>
+      </div>
+      <div class="funnel-arrow">&rarr;</div>
+      <div class="funnel-step" style="border-color:var(--green);">
+        <div class="step-name">가입 유지</div>
+        <div class="step-metric" style="color:var(--green);">${activeNow}명</div>
+        <div class="step-sub">활성 가입자</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCompareD3() {
+  const latest = csvData.active_users.length - 1;
+  const wlUsers = csvData.watchlist_users[latest];
+  const activeNow = csvData.active_users[latest];
+  const nonWlUsers = activeNow - wlUsers;
+  const totalChurns = csvData.daily_churn.reduce((a,b) => a+b, 0);
+  // 등록자 해지 0명이므로, 모든 해지는 미등록자에서 발생
+  // 역대 미등록자 = 현재 활성 미등록자 + 해지된 미등록자(=전체 해지)
+  const totalNonWlEver = nonWlUsers + totalChurns;
+  const churnRate = totalNonWlEver > 0 ? (totalChurns / totalNonWlEver * 100).toFixed(1) : 'N/A';
+
+  const el = document.getElementById('compareD3');
+  el.innerHTML = `
+    <h3 style="font-size:15px;font-weight:600;margin-bottom:12px;">D-3. 관심종목 등록자 vs 미등록자</h3>
+    <div class="compare-grid">
+      <div class="compare-card" style="border-color:var(--green);">
+        <h4 style="color:var(--green);">\u2705 관심종목 등록자 (${wlUsers}명)</h4>
+        <div class="big-num" style="color:var(--green);">해지 0명</div>
+        <div class="sub-stat" style="margin-top:12px;font-size:14px;">해지율 <strong style="color:var(--green);">0%</strong></div>
+        <div class="sub-stat">Day3 리텐션: 12.5%</div>
+        <div class="sub-stat">인게이지먼트: 미등록 대비 30~58배</div>
+        <div class="sub-stat" style="margin-top:8px;font-size:12px;color:var(--green);">\u2192 가입 직후 관심종목을 등록한 유저는<br>단 한 명도 해지하지 않음</div>
+      </div>
+      <div class="compare-card" style="border-color:var(--accent);">
+        <h4 style="color:var(--accent);">\u274C 미등록자 (현재 ${nonWlUsers}명)</h4>
+        <div class="big-num" style="color:var(--accent);">해지 ${totalChurns}명</div>
+        <div class="sub-stat" style="margin-top:12px;font-size:14px;">해지율 <strong style="color:var(--accent);">${churnRate}%</strong> <span style="font-size:11px;color:var(--text-secondary);">(${totalChurns}/${totalNonWlEver})</span></div>
+        <div class="sub-stat">Day3 리텐션: 1.1%</div>
+        <div class="sub-stat">인게이지먼트: 기준 (1x)</div>
+        <div class="sub-stat" style="margin-top:8px;font-size:12px;color:var(--accent);">\u2192 전체 해지 ${totalChurns}명 중 100%가 미등록자<br>온보딩에서 등록 유도가 최우선</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderInsightD() {
+  const el = document.getElementById('insightD');
+  el.innerHTML = `
+    <span class="dot"></span>
+    가입 ${activationFunnel.subscription_started}명 중 시그널 조회 ${activationFunnel.stock_signal_pct}%, 관심종목 등록 ${activationFunnel.watchlist_pct}%. 온보딩에서 관심종목 등록으로 바로 유도해야.
+  `;
+}
+
+function renderChurnF4Stats() {
+  const afterChurns = csvData.daily_churn.slice(enhanceIdx).reduce((a,b) => a+b, 0);
+  // D0 churns in After period: difference of cumulative churn_day0
+  const d0AtEnhance = csvData.churn_day0[enhanceIdx];
+  const latest = csvData.churn_day0.length - 1;
+  const d0AtEnd = csvData.churn_day0[latest];
+  let afterD0 = 0;
+  if (d0AtEnhance !== null && d0AtEnd !== null) {
+    afterD0 = d0AtEnd - d0AtEnhance;
+  }
+  const afterD1plus = afterChurns - afterD0;
+  const d0Ratio = afterChurns > 0 ? (afterD0 / afterChurns * 100).toFixed(1) : 'N/A';
+
+  const el = document.getElementById('churnF4Stats');
+  el.innerHTML = `
+    <div style="text-align:center;">
+      <div style="font-size:14px;color:var(--text-secondary);margin-bottom:12px;">After 기간 해지 ${afterChurns}명 중</div>
+      <div style="font-size:48px;font-weight:700;color:var(--accent);">${d0Ratio}%</div>
+      <div style="font-size:16px;font-weight:600;color:var(--accent);margin-top:4px;">당일(D0) 해지</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:16px;">D0: ${afterD0}명 | D1+: ${afterD1plus}명</div>
+      <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">가입 첫날 경험이 유지를 결정합니다</div>
+    </div>
+  `;
+}
+
+// =============================================
+// DATA REFRESH (CSV paste)
+// =============================================
+function applyCSVData() {
+  const statusEl = document.getElementById('modalStatus');
+  const raw = document.getElementById('csvInput').value.trim();
+  if (!raw) { statusEl.textContent = '\u274C CSV 데이터를 입력하세요.'; statusEl.style.color = 'var(--accent)'; return; }
+
+  try {
+    const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length < 2) throw new Error('헤더와 데이터 행이 필요합니다.');
+
+    const headers = lines[0].split(',').map(h => h.trim());
+    const colIdx = {};
+    ['date','active_users','daily_signup','daily_churn','watchlist_users','push_success','signal_read','churn_day0','inflow_total','inflow_pass_push','inflow_pass_menu','rejoin_users'].forEach(col => {
+      const idx = headers.indexOf(col);
+      if (idx === -1 && col === 'date') throw new Error('date 컬럼을 찾을 수 없습니다.');
+      colIdx[col] = idx;
+    });
+
+    // Parse rows
+    const newData = { date:[], active_users:[], daily_signup:[], daily_churn:[], watchlist_users:[], push_success:[], signal_read:[], churn_day0:[], inflow_total:[], inflow_pass_push:[], inflow_pass_menu:[], rejoin_users:[] };
+
+    for (let i = 1; i < lines.length; i++) {
+      const cols = lines[i].split(',').map(c => c.trim());
+      if (cols.length < 2) continue;
+
+      newData.date.push(cols[colIdx.date]);
+      ['active_users','daily_signup','daily_churn','watchlist_users','push_success','signal_read'].forEach(key => {
+        const idx = colIdx[key];
+        newData[key].push(idx >= 0 && cols[idx] !== '' ? parseInt(cols[idx]) : 0);
+      });
+      ['churn_day0','inflow_total','inflow_pass_push','inflow_pass_menu','rejoin_users'].forEach(key => {
+        const idx = colIdx[key];
+        newData[key].push(idx >= 0 && cols[idx] !== '' ? parseInt(cols[idx]) : null);
+      });
+    }
+
+    if (newData.date.length === 0) throw new Error('유효한 데이터 행이 없습니다.');
+
+    // Update csvData
+    Object.keys(newData).forEach(k => { csvData[k] = newData[k]; });
+
+    // Recompute globals
+    shortDates = csvData.date.map(d => {
+      const parts = d.split('-');
+      return parseInt(parts[1]) + '/' + parseInt(parts[2]);
+    });
+
+    // Update launchIdx and enhanceIdx
+    launchIdx = csvData.date.indexOf('2025-12-23');
+    enhanceIdx = csvData.date.indexOf('2026-02-13');
+
+    // Destroy all charts
+    destroyAllCharts();
+
+    // Clear dynamic containers
+    document.getElementById('kpiGrid').innerHTML = '';
+    document.getElementById('growthInsight').innerHTML = '';
+    document.getElementById('funnelD2').innerHTML = '';
+    document.getElementById('nextStepsList').innerHTML = '';
+    document.getElementById('enhancementTable').innerHTML = '';
+    document.getElementById('cohortHeatmapWrap').innerHTML = '';
+
+    // Re-render everything
+    renderTopFunnelFlow();
+    renderCompareD3();
+    renderInsightD();
+    renderChurnF4Stats();
+    renderKPICards();
+    renderGrowthCharts();
+    renderInflowCharts();
+    renderActivationCharts();
+    renderEngagementCharts();
+    renderRetentionCharts();
+    renderEnhancement();
+
+    // Update footer
+    const now = new Date();
+    const dateStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+    const timeStr = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('dashFooter').innerHTML = `최종 갱신: ${dateStr} ${timeStr} (CSV 수동 갱신)<br>투자시그널 경영진 대시보드 | 퀀팃투자자문`;
+
+    statusEl.textContent = `\u2705 ${newData.date.length}일 데이터 적용 완료! (${newData.date[0]} ~ ${newData.date[newData.date.length-1]})`;
+    statusEl.style.color = 'var(--green)';
+
+    // Close modal after a short delay
+    setTimeout(() => { document.getElementById('refreshModal').classList.remove('active'); }, 1500);
+
+  } catch (err) {
+    statusEl.textContent = '\u274C 오류: ' + err.message;
+    statusEl.style.color = 'var(--accent)';
+  }
+}
+
+// =============================================
 // INIT
 // =============================================
+renderTopFunnelFlow();
+renderCompareD3();
+renderInsightD();
+renderChurnF4Stats();
 renderKPICards();
 renderGrowthCharts();
 renderInflowCharts();
